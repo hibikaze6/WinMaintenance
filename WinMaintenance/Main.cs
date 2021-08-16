@@ -34,6 +34,7 @@ namespace WinMaintenance
             InitializeComponent();
         }
 
+        //使えることがわかったらメソッド名ちゃんとかえる
         private int test1()
         {
             AutoProps.managementClass = "Win32_Processor";
@@ -55,6 +56,7 @@ namespace WinMaintenance
             //CPU使用率を別スレッドで変異させるTask.Run
             Task<int> task1 = Task.Run(() => test1());
 
+            //ここでTask全般を待機する(次はWhenAllとWaitAllの違いを覚えること)
             await Task.WhenAll(task1);
         }
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
