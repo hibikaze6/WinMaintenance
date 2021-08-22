@@ -33,6 +33,8 @@
             this.memoryAvailableLabel = new System.Windows.Forms.Label();
             this.memoryProgress = new System.Windows.Forms.ProgressBar();
             this.applyButton = new System.Windows.Forms.Button();
+            this.cpuUsePerLabel = new System.Windows.Forms.Label();
+            this.memUsePerLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // cpuProgress
@@ -66,7 +68,7 @@
             // 
             this.memoryProgress.Location = new System.Drawing.Point(14, 102);
             this.memoryProgress.Name = "memoryProgress";
-            this.memoryProgress.Size = new System.Drawing.Size(166, 23);
+            this.memoryProgress.Size = new System.Drawing.Size(172, 23);
             this.memoryProgress.TabIndex = 3;
             // 
             // applyButton
@@ -79,18 +81,38 @@
             this.applyButton.UseVisualStyleBackColor = true;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
+            // cpuUsePerLabel
+            // 
+            this.cpuUsePerLabel.AutoSize = true;
+            this.cpuUsePerLabel.Location = new System.Drawing.Point(192, 41);
+            this.cpuUsePerLabel.Name = "cpuUsePerLabel";
+            this.cpuUsePerLabel.Size = new System.Drawing.Size(35, 12);
+            this.cpuUsePerLabel.TabIndex = 5;
+            this.cpuUsePerLabel.Text = "label1";
+            // 
+            // memUsePerLabel
+            // 
+            this.memUsePerLabel.AutoSize = true;
+            this.memUsePerLabel.Location = new System.Drawing.Point(192, 109);
+            this.memUsePerLabel.Name = "memUsePerLabel";
+            this.memUsePerLabel.Size = new System.Drawing.Size(35, 12);
+            this.memUsePerLabel.TabIndex = 6;
+            this.memUsePerLabel.Text = "label2";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.memUsePerLabel);
+            this.Controls.Add(this.cpuUsePerLabel);
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.memoryProgress);
             this.Controls.Add(this.memoryAvailableLabel);
             this.Controls.Add(this.cpuNameLabel);
             this.Controls.Add(this.cpuProgress);
             this.Name = "Main";
-            this.Text = "Form1";
+            this.Text = "WinMaintenance";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
             this.ResumeLayout(false);
@@ -105,6 +127,8 @@
         private System.Windows.Forms.Label memoryAvailableLabel;
         private System.Windows.Forms.ProgressBar memoryProgress;
         private System.Windows.Forms.Button applyButton;
+        private System.Windows.Forms.Label cpuUsePerLabel;
+        private System.Windows.Forms.Label memUsePerLabel;
     }
 }
 

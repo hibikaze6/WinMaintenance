@@ -26,10 +26,13 @@ namespace WinMaintenance
         private void setCpuProgressValue(int cpuUsePer)
         {
             cpuProgress.Value = cpuUsePer;
+            cpuUsePerLabel.Text = cpuUsePer.ToString() + "％ Use";
         }
-        private void setMemoryProgressValue(int memoryUsePer)
+        private void setMemoryProgressValue(int memoryUseCapa)
         {
-            memoryProgress.Value = memoryUsePer;
+            memoryProgress.Value = memoryUseCapa;
+
+            memUsePerLabel.Text = Convert.ToString((Math.Floor((double)memoryUseCapa / memoryProgress.Maximum * 100.00))) + "％ Use";
         }
         private void setMaxMemoryProgressValue(int memoryMaxValue) 
         {
