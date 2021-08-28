@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Management;
+﻿using System.Management;
 
 namespace WinMaintenance
 {
+    /// <summary>
+    /// Wmiの操作関連のメソッド群を記述してある。
+    /// </summary>
+    /// <see cref="System.Management"/>
     class WmiOperation
     {
         /// <summary>
         /// AutoProps.csにあるGetter、Setter(managementClass、classProperty)にセットされている
         /// プロパティ(値)を利用し、wmiInfoから情報をとってくる
         /// </summary>
+        /// <see cref="System.Management"/>
         /// <returns>wmiInfoメソッドから取得したWmiの情報をstring型でreturnしている</returns>
         public static string getWmiInfo()
         {

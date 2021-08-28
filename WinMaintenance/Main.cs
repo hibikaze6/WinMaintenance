@@ -1,32 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
-using WinMaintenance.Properties;
 
 /// <summary>
-/// 
-/// 
+/// ・WinMaintenance(Ver0.01) C#7.3
+/// ・Formのフロントエンドの動作全般を記述している
 /// </summary>
-/// 
-///
-///
+/// <see cref="System"/>
+/// <see cref="System.Threading.Tasks"/>
+/// <see cref="System.Windows.Forms"/>
+/// <see cref="System.Threading"/>
 
 namespace WinMaintenance
 {
     public partial class Main : Form
     {
-
-       /// <summary>
-       /// intを引数とするDelegate型 delInt
-       /// </summary>
-       /// <param name="value">intの引数を受け取る</param>
+        /// <summary>
+        /// intを引数とするDelegate型 delInt
+        /// </summary>
+        /// <param name="value">intの引数を受け取る</param>
         delegate void delInt(int value);
 
         /// <summary>
