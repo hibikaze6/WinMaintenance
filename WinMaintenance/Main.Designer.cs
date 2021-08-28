@@ -39,11 +39,19 @@
             this.taskMgrTab = new System.Windows.Forms.TabPage();
             this.settingsTab = new System.Windows.Forms.TabPage();
             this.explorerSettingsGroupbox = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.pcHidePictureCheckbox = new System.Windows.Forms.CheckBox();
+            this.pcHideGroupbox = new System.Windows.Forms.GroupBox();
+            this.pcHideVideoCheckbox = new System.Windows.Forms.CheckBox();
+            this.pcHideDownloadCheckbox = new System.Windows.Forms.CheckBox();
+            this.pcHideDocumentCheckbox = new System.Windows.Forms.CheckBox();
+            this.pcHideMusicCheckbox = new System.Windows.Forms.CheckBox();
+            this.pcHideDesktopCheckbox = new System.Windows.Forms.CheckBox();
+            this.pcHide3dObjectCheckbox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.taskMgrTab.SuspendLayout();
             this.settingsTab.SuspendLayout();
             this.explorerSettingsGroupbox.SuspendLayout();
+            this.pcHideGroupbox.SuspendLayout();
             this.SuspendLayout();
             // 
             // cpuProgress
@@ -147,23 +155,99 @@
             // 
             // explorerSettingsGroupbox
             // 
-            this.explorerSettingsGroupbox.Controls.Add(this.checkBox1);
+            this.explorerSettingsGroupbox.Controls.Add(this.pcHideGroupbox);
             this.explorerSettingsGroupbox.Location = new System.Drawing.Point(12, 7);
             this.explorerSettingsGroupbox.Name = "explorerSettingsGroupbox";
-            this.explorerSettingsGroupbox.Size = new System.Drawing.Size(405, 265);
+            this.explorerSettingsGroupbox.Size = new System.Drawing.Size(405, 358);
             this.explorerSettingsGroupbox.TabIndex = 0;
             this.explorerSettingsGroupbox.TabStop = false;
             this.explorerSettingsGroupbox.Text = "Explorer_Settings";
             // 
-            // checkBox1
+            // pcHidePictureCheckbox
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(18, 23);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(80, 16);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.pcHidePictureCheckbox.AutoSize = true;
+            this.pcHidePictureCheckbox.Location = new System.Drawing.Point(11, 23);
+            this.pcHidePictureCheckbox.Name = "pcHidePictureCheckbox";
+            this.pcHidePictureCheckbox.Size = new System.Drawing.Size(93, 16);
+            this.pcHidePictureCheckbox.TabIndex = 0;
+            this.pcHidePictureCheckbox.Text = "ピクチャフォルダ";
+            this.pcHidePictureCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // pcHideGroupbox
+            // 
+            this.pcHideGroupbox.Controls.Add(this.pcHide3dObjectCheckbox);
+            this.pcHideGroupbox.Controls.Add(this.pcHideDesktopCheckbox);
+            this.pcHideGroupbox.Controls.Add(this.pcHideMusicCheckbox);
+            this.pcHideGroupbox.Controls.Add(this.pcHideDocumentCheckbox);
+            this.pcHideGroupbox.Controls.Add(this.pcHideDownloadCheckbox);
+            this.pcHideGroupbox.Controls.Add(this.pcHideVideoCheckbox);
+            this.pcHideGroupbox.Controls.Add(this.pcHidePictureCheckbox);
+            this.pcHideGroupbox.Location = new System.Drawing.Point(15, 20);
+            this.pcHideGroupbox.Name = "pcHideGroupbox";
+            this.pcHideGroupbox.Size = new System.Drawing.Size(189, 180);
+            this.pcHideGroupbox.TabIndex = 1;
+            this.pcHideGroupbox.TabStop = false;
+            this.pcHideGroupbox.Text = "エクスプローラのPCのフォルダ非表示";
+            // 
+            // pcHideVideoCheckbox
+            // 
+            this.pcHideVideoCheckbox.AutoSize = true;
+            this.pcHideVideoCheckbox.Location = new System.Drawing.Point(11, 45);
+            this.pcHideVideoCheckbox.Name = "pcHideVideoCheckbox";
+            this.pcHideVideoCheckbox.Size = new System.Drawing.Size(86, 16);
+            this.pcHideVideoCheckbox.TabIndex = 1;
+            this.pcHideVideoCheckbox.Text = "ビデオフォルダ";
+            this.pcHideVideoCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // pcHideDownloadCheckbox
+            // 
+            this.pcHideDownloadCheckbox.AutoSize = true;
+            this.pcHideDownloadCheckbox.Location = new System.Drawing.Point(11, 67);
+            this.pcHideDownloadCheckbox.Name = "pcHideDownloadCheckbox";
+            this.pcHideDownloadCheckbox.Size = new System.Drawing.Size(114, 16);
+            this.pcHideDownloadCheckbox.TabIndex = 2;
+            this.pcHideDownloadCheckbox.Text = "ダウンロードフォルダ";
+            this.pcHideDownloadCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // pcHideDocumentCheckbox
+            // 
+            this.pcHideDocumentCheckbox.AutoSize = true;
+            this.pcHideDocumentCheckbox.Location = new System.Drawing.Point(11, 111);
+            this.pcHideDocumentCheckbox.Name = "pcHideDocumentCheckbox";
+            this.pcHideDocumentCheckbox.Size = new System.Drawing.Size(111, 16);
+            this.pcHideDocumentCheckbox.TabIndex = 3;
+            this.pcHideDocumentCheckbox.Text = "ドキュメントフォルダ";
+            this.pcHideDocumentCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // pcHideMusicCheckbox
+            // 
+            this.pcHideMusicCheckbox.AutoSize = true;
+            this.pcHideMusicCheckbox.Location = new System.Drawing.Point(11, 89);
+            this.pcHideMusicCheckbox.Name = "pcHideMusicCheckbox";
+            this.pcHideMusicCheckbox.Size = new System.Drawing.Size(109, 16);
+            this.pcHideMusicCheckbox.TabIndex = 4;
+            this.pcHideMusicCheckbox.Text = "ミュージックフォルダ";
+            this.pcHideMusicCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // pcHideDesktopCheckbox
+            // 
+            this.pcHideDesktopCheckbox.AutoSize = true;
+            this.pcHideDesktopCheckbox.Location = new System.Drawing.Point(11, 133);
+            this.pcHideDesktopCheckbox.Name = "pcHideDesktopCheckbox";
+            this.pcHideDesktopCheckbox.Size = new System.Drawing.Size(110, 16);
+            this.pcHideDesktopCheckbox.TabIndex = 5;
+            this.pcHideDesktopCheckbox.Text = "デスクトップフォルダ";
+            this.pcHideDesktopCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // pcHide3dObjectCheckbox
+            // 
+            this.pcHide3dObjectCheckbox.AutoSize = true;
+            this.pcHide3dObjectCheckbox.Location = new System.Drawing.Point(11, 155);
+            this.pcHide3dObjectCheckbox.Name = "pcHide3dObjectCheckbox";
+            this.pcHide3dObjectCheckbox.Size = new System.Drawing.Size(124, 16);
+            this.pcHide3dObjectCheckbox.TabIndex = 6;
+            this.pcHide3dObjectCheckbox.Text = "3Dオブジェクトフォルダ";
+            this.pcHide3dObjectCheckbox.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
@@ -181,7 +265,8 @@
             this.taskMgrTab.PerformLayout();
             this.settingsTab.ResumeLayout(false);
             this.explorerSettingsGroupbox.ResumeLayout(false);
-            this.explorerSettingsGroupbox.PerformLayout();
+            this.pcHideGroupbox.ResumeLayout(false);
+            this.pcHideGroupbox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -199,7 +284,14 @@
         private System.Windows.Forms.TabPage taskMgrTab;
         private System.Windows.Forms.TabPage settingsTab;
         private System.Windows.Forms.GroupBox explorerSettingsGroupbox;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox pcHidePictureCheckbox;
+        private System.Windows.Forms.GroupBox pcHideGroupbox;
+        private System.Windows.Forms.CheckBox pcHide3dObjectCheckbox;
+        private System.Windows.Forms.CheckBox pcHideDesktopCheckbox;
+        private System.Windows.Forms.CheckBox pcHideMusicCheckbox;
+        private System.Windows.Forms.CheckBox pcHideDocumentCheckbox;
+        private System.Windows.Forms.CheckBox pcHideDownloadCheckbox;
+        private System.Windows.Forms.CheckBox pcHideVideoCheckbox;
     }
 }
 
