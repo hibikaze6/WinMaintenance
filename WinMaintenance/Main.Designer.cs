@@ -37,6 +37,10 @@
             this.memUsePerLabel = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.taskMgrTab = new System.Windows.Forms.TabPage();
+            this.diskListCb = new System.Windows.Forms.ComboBox();
+            this.diskUsePerLabel = new System.Windows.Forms.Label();
+            this.diskAvailableLabel = new System.Windows.Forms.Label();
+            this.diskProgress = new System.Windows.Forms.ProgressBar();
             this.memoryTypeLabel = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label1 = new System.Windows.Forms.Label();
@@ -54,10 +58,6 @@
             this.pcHideDownloadCheckbox = new System.Windows.Forms.CheckBox();
             this.pcHideVideoCheckbox = new System.Windows.Forms.CheckBox();
             this.pcHidePictureCheckbox = new System.Windows.Forms.CheckBox();
-            this.diskAvailableLabel = new System.Windows.Forms.Label();
-            this.diskProgress = new System.Windows.Forms.ProgressBar();
-            this.diskUsePerLabel = new System.Windows.Forms.Label();
-            this.diskListCb = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.taskMgrTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cpuPictureBox)).BeginInit();
@@ -165,6 +165,42 @@
             this.taskMgrTab.TabIndex = 0;
             this.taskMgrTab.Text = "TaskMgr";
             this.taskMgrTab.UseVisualStyleBackColor = true;
+            // 
+            // diskListCb
+            // 
+            this.diskListCb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.diskListCb.FormattingEnabled = true;
+            this.diskListCb.Location = new System.Drawing.Point(333, 245);
+            this.diskListCb.Name = "diskListCb";
+            this.diskListCb.Size = new System.Drawing.Size(207, 20);
+            this.diskListCb.TabIndex = 18;
+            this.diskListCb.SelectedIndexChanged += new System.EventHandler(this.diskListCb_SelectedIndexChanged);
+            // 
+            // diskUsePerLabel
+            // 
+            this.diskUsePerLabel.AutoSize = true;
+            this.diskUsePerLabel.Location = new System.Drawing.Point(511, 222);
+            this.diskUsePerLabel.Name = "diskUsePerLabel";
+            this.diskUsePerLabel.Size = new System.Drawing.Size(29, 12);
+            this.diskUsePerLabel.TabIndex = 17;
+            this.diskUsePerLabel.Text = "--％";
+            // 
+            // diskAvailableLabel
+            // 
+            this.diskAvailableLabel.AutoSize = true;
+            this.diskAvailableLabel.Location = new System.Drawing.Point(331, 200);
+            this.diskAvailableLabel.Name = "diskAvailableLabel";
+            this.diskAvailableLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.diskAvailableLabel.Size = new System.Drawing.Size(79, 12);
+            this.diskAvailableLabel.TabIndex = 15;
+            this.diskAvailableLabel.Text = "Disk_Available";
+            // 
+            // diskProgress
+            // 
+            this.diskProgress.Location = new System.Drawing.Point(333, 215);
+            this.diskProgress.Name = "diskProgress";
+            this.diskProgress.Size = new System.Drawing.Size(172, 23);
+            this.diskProgress.TabIndex = 16;
             // 
             // memoryTypeLabel
             // 
@@ -338,41 +374,6 @@
             this.pcHidePictureCheckbox.TabIndex = 0;
             this.pcHidePictureCheckbox.Text = "ピクチャフォルダ";
             this.pcHidePictureCheckbox.UseVisualStyleBackColor = true;
-            // 
-            // diskAvailableLabel
-            // 
-            this.diskAvailableLabel.AutoSize = true;
-            this.diskAvailableLabel.Location = new System.Drawing.Point(331, 200);
-            this.diskAvailableLabel.Name = "diskAvailableLabel";
-            this.diskAvailableLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.diskAvailableLabel.Size = new System.Drawing.Size(79, 12);
-            this.diskAvailableLabel.TabIndex = 15;
-            this.diskAvailableLabel.Text = "Disk_Available";
-            // 
-            // diskProgress
-            // 
-            this.diskProgress.Location = new System.Drawing.Point(333, 215);
-            this.diskProgress.Name = "diskProgress";
-            this.diskProgress.Size = new System.Drawing.Size(172, 23);
-            this.diskProgress.TabIndex = 16;
-            // 
-            // diskUsePerLabel
-            // 
-            this.diskUsePerLabel.AutoSize = true;
-            this.diskUsePerLabel.Location = new System.Drawing.Point(511, 222);
-            this.diskUsePerLabel.Name = "diskUsePerLabel";
-            this.diskUsePerLabel.Size = new System.Drawing.Size(29, 12);
-            this.diskUsePerLabel.TabIndex = 17;
-            this.diskUsePerLabel.Text = "--％";
-            // 
-            // diskListCb
-            // 
-            this.diskListCb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.diskListCb.FormattingEnabled = true;
-            this.diskListCb.Location = new System.Drawing.Point(333, 245);
-            this.diskListCb.Name = "diskListCb";
-            this.diskListCb.Size = new System.Drawing.Size(207, 20);
-            this.diskListCb.TabIndex = 18;
             // 
             // Main
             // 

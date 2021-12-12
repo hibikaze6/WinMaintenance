@@ -18,16 +18,40 @@ namespace WinMaintenance
     public partial class Main : Form
     {
         /// <summary>
+        /// なにも受け取らない、引き渡さないDelegate型 delVoid
+        /// </summary>
+        delegate void delVoid();
+
+        /// <summary>
+        /// ManagementObjectを引数とするDelegate型 delMo
+        /// </summary>
+        /// <param name="mo">ManagementObjectの引数を引き渡す</param>
+        delegate bool delMo(ManagementObject mo);
+
+        /// <summary>
         /// intを引数とするDelegate型 delInt
         /// </summary>
-        /// <param name="value">intの引数を受け取る</param>
+        /// <param name="value">intの引数を引き渡す</param>
         delegate void delInt(int value);
+
+        /// <summary>
+        /// double型2つを引数とするDelegate型 delDouble
+        /// </summary>
+        /// <param name="value">1つ目のdoubleの引数を引き渡す</param>
+        ///  <param name="value2">2つ目のdoubleの引数を引き渡す</param>
+        delegate void delDouble2(double value, double value2);
 
         /// <summary>
         /// stringを引数とするDelegate型 delStr
         /// </summary>
-        /// <param name="value">stringの引数を受け取る</param>
+        /// <param name="value">stringの引数を引き渡す</param>
         delegate void delStr(string value);
+
+        /// <summary>
+        /// Taskでの操作のWMI関係のデッドロック防止の"testLock"
+        /// </summary>
+        /// 
+        public readonly object testLock = new object();
 
         /// <summary>
         /// trueになるとCPUとメモリ使用容量を無限ループで取得するループを抜けるようにする(予定) ※なぜか動かん
@@ -36,17 +60,46 @@ namespace WinMaintenance
         bool formEnd_Flg = false;
 
         /// <summary>
-        /// Taskでの操作のWMI関係のデッドロック防止の"testLock"
+        /// WMIの情報をとってくるメソッド
         /// </summary>
-        /// 
-        private readonly object testLock = new object();
-
+        /// <example>
+        /// WmiOperation.getWmiAll() 格納されている全てのデータを"ManagementObjectCollection"型で返す
+        /// WmiOperation.getWmiInfo(string managementClass, string classProperty) 抜き出したい"ClassProperty"の値を"String"型で返す
+        /// </example>
         WmiOperation WmiOperation = new WmiOperation();
 
         /// <summary>
         /// なんか処理を別にしないとフォーム固まる(Task.Runの中でできない件)
         /// ここにはInvoke処理でFormの値が変更される処理を書くところ
         /// </summary>
+        /// 
+        private void setDiskStatusChange()
+        {
+            lock (testLock)
+            {
+                //diskListCbへ先に"Win32_DiskDrive"の"Caption"を入れて、それから最初に取得できたディスクの空き容量を出す
+                AutoProps.managementClass = "Win32_LogicalDisk";
+                foreach (ManagementObject mo in WmiOperation.getWmiAll())
+                {
+                    bool b = (bool)Invoke(new delMo(getDiskListCbText), mo);
+                    //あえて分かりやすく1024で3回割っている(元の数値はバイトで出ているため)
+                    if (b is true)
+                    {
+                        //計算部分
+                        double maxDiskSizeGB = Math.Round(double.Parse(mo["Size"].ToString()) / 1024 / 1024 / 1024, 1);
+                        double freeDiskDizeGB = Math.Round(double.Parse(mo["FreeSpace"].ToString()) / 1024 / 1024 / 1024, 1);
+
+                        Invoke(new delDouble2(setDiskStatusText), maxDiskSizeGB, freeDiskDizeGB);
+
+
+                    }
+                }
+            }
+        }
+        private bool getDiskListCbText(ManagementObject mo) 
+        {
+            return diskListCb.Text.Contains(mo["Caption"].ToString());
+        }
         private void setCpuProgressValue(int cpuUsePer)
         {
             cpuProgress.Value = cpuUsePer;
@@ -65,6 +118,14 @@ namespace WinMaintenance
         private void setMemoryAvailableLabelText(string memoryAvailableLabelText)
         {
             memoryAvailableLabel.Text = memoryAvailableLabelText + "GB";
+        }
+        private void setDiskStatusText(double maxDiskSizeGB, double freeDiskDizeGB)
+        {
+            diskProgress.Maximum = Convert.ToInt32(maxDiskSizeGB);
+            diskProgress.Value = Convert.ToInt32(freeDiskDizeGB);
+
+            diskUsePerLabel.Text = Math.Round(Math.Floor(Convert.ToDouble(freeDiskDizeGB)) / (Convert.ToDouble(maxDiskSizeGB)) * 100.0).ToString() + "% Free";
+            diskAvailableLabel.Text = maxDiskSizeGB.ToString() + "GB/" + freeDiskDizeGB.ToString() + "GB Free";
         }
         private void setNowTimeLabelChange(string nowTimeLabelText)
         {
@@ -85,7 +146,7 @@ namespace WinMaintenance
         /// <returns>正常終了した際にint型の0を返す</returns>
         private int cpuUsePercentChange()
         {
-            lock (testLock) 
+            lock (testLock)
             {
                 // プロパティを設定してWmiから情報を抜き出す
                 AutoProps.managementClass = "Win32_Processor";
@@ -94,11 +155,14 @@ namespace WinMaintenance
 
                 // Formに取得した値をFormに代入する
                 Invoke(new delInt(setCpuProgressValue), int.Parse(WmiOperation.getWmiInfo()));
-                return 0;
             }
+                return 0;
         }
         private int memoryUsePercentChange()
         {
+            var maxMemory = 0.0;
+            var freeMemory = 0.0;
+
             lock (testLock)
             {
                 // プロパティを設定してWmiから情報を抜き出す
@@ -106,24 +170,24 @@ namespace WinMaintenance
                 AutoProps.classProperty = "TotalVisibleMemorySize";
 
                 // メモリ最大を○○.○GB表記にするために計算結果をdoubleParceしてから変数に代入している
-                var maxMemory = (Math.Floor(double.Parse(WmiOperation.getWmiInfo()) / 1024.0 / 1024.0 * 10) / 10);
+                maxMemory = Math.Floor(double.Parse(WmiOperation.getWmiInfo()) / 1024.0 / 1024.0 * 10) / 10;
 
                 AutoProps.classProperty = "FreePhysicalMemory";
 
                 // 空きメモリ容量を 〃
-                var freeMemory = (Math.Floor(double.Parse(WmiOperation.getWmiInfo()) / 1024.0 / 1024.0 * 10) / 10);
+                freeMemory = Math.Floor(double.Parse(WmiOperation.getWmiInfo()) / 1024.0 / 1024.0 * 10) / 10;
+            }
 
-
-                /* 値の確認テスト用
-                MessageBox.Show(maxMemory.ToString());
-                MessageBox.Show(freeMemory.ToString());
-                */
+                // 値の確認テスト用
+                //MessageBox.Show(maxMemory.ToString());
+                //MessageBox.Show(freeMemory.ToString());
+                
 
                 // Formに取得した値をFormに代入する
                 Invoke(new delInt(setMaxMemoryProgressValue), Convert.ToInt32(maxMemory * 10));
                 Invoke(new delInt(setMemoryProgressValue), (memoryProgress.Maximum - Convert.ToInt32(freeMemory * 10)));
                 Invoke(new delStr(setMemoryAvailableLabelText), ("UseMem" + maxMemory + "GB" + " / " + (maxMemory - freeMemory).ToString()));
-            }
+
 
             return 0;
         }
@@ -143,7 +207,7 @@ namespace WinMaintenance
         /// Taskを二つ同時に動かすと変更が混ざってエラー起こすので一つずつ処理している
         /// ・メモリのタイプ、速度を出している。
         /// ・GPU、CPUの種類の画像をWMIから情報を取得し、表示している。
-        /// ・ディスクの情報を全て出し、
+        /// ・ディスクの情報を全て出し、空き容量を％と数値で表示する。
         /// </summary>
         /// <param name="sender">自動生成されたイベントハンドラ</param>
         /// <param name="e">自動生成されたイベントハンドラ</param>
@@ -223,17 +287,17 @@ namespace WinMaintenance
             }
 
 
-            //ディスク全ての情報を出す(予定)
-            AutoProps.managementClass = "Win32_DiskDrive";
+            //diskListCbへ先に"Win32_DiskDrive"の"Caption"を入れて、それから最初に取得できたディスクの空き容量を出す
+            AutoProps.managementClass = "Win32_LogicalDisk";
             foreach (ManagementObject mo in WmiOperation.getWmiAll())
             {
-                if (mo["Caption"] != null)
+                if (mo["Size"] != null)
                 {
-                    diskListCb.Items.Add(mo["Caption"]);
-                    MessageBox.Show(mo["Caption"].ToString());
+                    diskListCb.Items.Add(mo["Caption"] + " Drive");
                 }
             }
             diskListCb.SelectedIndex = 0;
+            //この先"diskListCb_SelectedIndexChanged"イベントで表示してくれるため書く必要はない
 
             // Formを閉じた際に"fromEnd_Flg"がtrueになるのでループから抜け出す(予定) ※なぜか動かん...
             while (!formEnd_Flg)
@@ -268,6 +332,11 @@ namespace WinMaintenance
         private void applyButton_Click(object sender, EventArgs e)
         {
             MessageBox.Show("OK");
+        }
+
+        private async void diskListCb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+                await Task.Run(() => setDiskStatusChange());
         }
     }
 }
