@@ -17,35 +17,10 @@ namespace WinMaintenance
 {
     public partial class Main : Form
     {
-        /// <summary>
-        /// なにも受け取らない、引き渡さないDelegate型 delVoid
-        /// </summary>
-        delegate void delVoid();
-
-        /// <summary>
-        /// ManagementObjectを引数とするDelegate型 delMo
-        /// </summary>
-        /// <param name="mo">ManagementObjectの引数を引き渡す</param>
-        delegate bool delMo(ManagementObject mo);
-
-        /// <summary>
-        /// intを引数とするDelegate型 delInt
-        /// </summary>
-        /// <param name="value">intの引数を引き渡す</param>
-        delegate void delInt(int value);
-
-        /// <summary>
-        /// double型2つを引数とするDelegate型 delDouble
-        /// </summary>
-        /// <param name="value">1つ目のdoubleの引数を引き渡す</param>
-        ///  <param name="value2">2つ目のdoubleの引数を引き渡す</param>
-        delegate void delDouble2(double value, double value2);
-
-        /// <summary>
-        /// stringを引数とするDelegate型 delStr
-        /// </summary>
-        /// <param name="value">stringの引数を引き渡す</param>
-        delegate void delStr(string value);
+        public Main()
+        {
+            InitializeComponent();
+        }
 
         /// <summary>
         /// Taskでの操作のWMI関係のデッドロック防止の"testLock"
@@ -135,11 +110,6 @@ namespace WinMaintenance
         /// ここにはInvoke処理でFormの値が変更される処理を書くところ ～End～
         /// </summary>
 
-
-        public Main()
-        {
-            InitializeComponent();
-        }
         /// <summary>
         /// AutoPropsへWmiの引き出したい情報を代入して、InvokeでDelegateのメソッドへ代入してFormの値を変更させるメソッド(下記二つのメソッド)
         /// </summary>
@@ -255,24 +225,33 @@ namespace WinMaintenance
             memoryTypeLabel.Text = memoryTypeLabel.Text + WmiOperation.getWmiInfo();
 
             //搭載Gpuによって"gpuPictureBox"の画像を変える
-            if (gpuNameLabel.Text.Contains("Intel"))
+            try
             {
-                gpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\GpuLogo\INTELHD_BADGE.png");
+                if (gpuNameLabel.Text.Contains("Intel"))
+                {
+                    gpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\GpuLogo\INTELHD_BADGE.png");
+                }
+                else if (gpuNameLabel.Text.Contains("Radeon"))
+                {
+                    gpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\GpuLogo\RADEON_FAMILY_BADGE.png");
+                }
+                else if (gpuNameLabel.Text.Contains("NVIDIA"))
+                {
+                    gpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\GpuLogo\NVIDIA_BADGE.png");
+                }
+                else
+                {
+                    gpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\GpuLogo\OTHERGPU_BADGE.png");
+                }
             }
-            else if (gpuNameLabel.Text.Contains("Radeon"))
+            catch (System.IO.FileNotFoundException)
             {
-                gpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\GpuLogo\RADEON_FAMILY_BADGE.png");
-            }
-            else if(gpuNameLabel.Text.Contains("NVIDIA"))
-            {
-                gpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\GpuLogo\NVIDIA_BADGE.png");
-            }
-            else
-            {
-                gpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\GpuLogo\OTHERGPU_BADGE.png");
+                gpuPictureBox.Image = null;
             }
 
             //搭載Cpuによって"gpuPictureBox"の画像を変える
+            try
+            {
             if (cpuNameLabel.Text.Contains("Intel"))
             {
                 cpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\CpuLogo\INTELCPU_BADGE.png");
@@ -285,7 +264,11 @@ namespace WinMaintenance
             {
                 cpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\CpuLogo\OTHERCPU_BADGE.png");
             }
-
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                gpuPictureBox.Image = null;
+            }
 
             //diskListCbへ先に"Win32_DiskDrive"の"Caption"を入れて、それから最初に取得できたディスクの空き容量を出す
             AutoProps.managementClass = "Win32_LogicalDisk";
@@ -298,6 +281,8 @@ namespace WinMaintenance
             }
             diskListCb.SelectedIndex = 0;
             //この先"diskListCb_SelectedIndexChanged"イベントで表示してくれるため書く必要はない
+
+            regSetteingGet();
 
             // Formを閉じた際に"fromEnd_Flg"がtrueになるのでループから抜け出す(予定) ※なぜか動かん...
             while (!formEnd_Flg)
