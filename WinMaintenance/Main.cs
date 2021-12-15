@@ -28,16 +28,11 @@ namespace WinMaintenance
         /// <summary>
         /// Taskでの操作のWMI関係のデッドロック防止の"testLock"
         /// </summary>
-        /// 
         public readonly object taskLock = new object();
 
         /// <summary>
-        /// WMIの情報をとってくるメソッド
+        /// WmiOperationClassのインスタンス化
         /// </summary>
-        /// <example>
-        /// WmiOperation.getWmiAll() 格納されている全てのデータを"ManagementObjectCollection"型で返す
-        /// WmiOperation.getWmiInfo(string managementClass, string classProperty) 抜き出したい"ClassProperty"の値を"String"型で返す
-        /// </example>
         WmiOperation WmiOperation = new WmiOperation();
 
         //ここにはInvoke処理でFormの値が変更される処理を書くところ ～ここから～
@@ -47,6 +42,10 @@ namespace WinMaintenance
             cpuProgress.Value = cpuUsePer;
             cpuUsePerLabel.Text = cpuUsePer.ToString() + "％ Use";
         }
+        /// <summary>
+        /// 受け取った現在のメモリ使用率をFormへ反映
+        /// </summary>
+        /// <param name="memoryUseCapa">memoryUsePercentChange()から計算され、受け取った</param>
         private void setMemoryProgressValue(int memoryUseCapa)
         {
             memoryProgress.Value = memoryUseCapa;
@@ -57,15 +56,20 @@ namespace WinMaintenance
         {
             memoryProgress.Maximum = memoryMaxValue;
         }
+        /// <summary>
+        /// 受け取った現在のメモリ空きパーセントをFormへ反映する。
+        /// </summary>
+        /// <param name="memoryAvailableLabelText">memoryUsePercentChange()から渡された値</param>
         private void setMemoryAvailableLabelText(string memoryAvailableLabelText)
         {
             memoryAvailableLabel.Text = memoryAvailableLabelText + "GB";
         }
+
         /// <summary>
-        /// WmiOperationでGetし、渡されたディスクの最大容量とディスクの空き容量を再計算し、GBで出して、Formに反映している。
+        /// 受け取った値で、ディスクの最大容量とディスクの空き容量を再計算し、GBで出して、Formに反映している。
         /// </summary>
-        /// <param name="maxDiskSizeGB">ディスクの最大容量をGBで、"浮動小数点"で出している</param>
-        /// <param name="freeDiskDizeGB">ディスクの空き容量を 〃 </param>
+        /// <param name="maxDiskSizeGB">setDiskStatusChange()から受け取った、ディスクの最大容量をGBで、"浮動小数点"で出している</param>
+        /// <param name="freeDiskDizeGB">setDiskStatusChange()から受け取った、ディスクの空き容量を 〃 </param>
         private void setDiskStatusText(double maxDiskSizeGB, double freeDiskDizeGB)
         {
             diskProgress.Maximum = Convert.ToInt32(maxDiskSizeGB);
@@ -78,7 +82,7 @@ namespace WinMaintenance
         /// <summary>
         /// 受け取った現在時刻をnowTimeLabelへ反映する。
         /// </summary>
-        /// <param name="nowTimeLabelText">現在時刻の"文字列"</param>
+        /// <param name="nowTimeLabelText">nowTimeLabelChange()から受け取った現在時刻の"文字列"</param>
         private void setNowTimeLabelText(string nowTimeLabelText)
         {
             nowTimeLabel.Text = nowTimeLabelText;
