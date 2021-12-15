@@ -10,75 +10,73 @@ namespace WinMaintenance
     class WmiOperation
     {
         /// <summary>
-        /// AutoProps.csにあるGetter、Setter(managementClass、classProperty)にセットされている
-        /// プロパティ(値)を利用し、wmiInfoから情報をとってくる
+        /// Wmiクラスから参照し取得したWmiプロパティの値を返す
         /// </summary>
-        /// <see cref="System.Management"/>
-        /// <returns>
-        /// wmiInfoメソッドから取得したWmiの情報をstring型でreturnしている
-        /// </returns>
+        /// <returns>指定されたクラスのプロパティの値を"文字列"で返す</returns>
         public string getWmiInfo()
         {
-                return wmiInfo(AutoProps.managementClass, AutoProps.classProperty);
-        }
-
-        public ManagementObjectCollection getWmiAll()
-        {
-                return wmiAll(AutoProps.managementClass);
+                return wmiInfo();
         }
 
         /// <summary>
-        /// AutoProps.csのmanagementClass、classPropertyGetter、Setterのプロパティを利用して、取得した
-        /// Wmiの情報を返すメソッド
+        /// Wmiクラスの中の"全プロパティ"を返す
         /// </summary>
-        /// <param name="managementClass">AutoProps.csのmanagementClassGetter、Setterのプロパティの値を参照している</param>
-        /// <param name="classProperty">AutoProps.csのclassPropertyGetter、Setterのプロパティの値を参照している</param>
-        /// <returns>上記のプロパティを利用してWmi情報を取得した値を"string"型で返している</returns>
+        /// <returns>指定されたクラスの"全プロパティ"が入った"コレクション(ManagementObjectCollection)"を返す</returns>
+        public ManagementObjectCollection getWmiAll()
+        {
+                return wmiAll();
+        }
+
+        //Wmi関係の変数を定義
         private ManagementClass mc;
         private ManagementObjectCollection moc;
-        private string wmiInfo(string managementClass, string classProperty)
+
+        /// <summary>
+        /// Wmiクラスから参照し取得したWmiプロパティの値を返す
+        /// </summary>
+        /// <returns>指定されたクラスのプロパティの値を"文字列"で返す</returns>
+        private string wmiInfo()
         {
-                var result = string.Empty;
+            // 結果格納するの変数を初期化
+            var result = string.Empty;
             do
             {
-                // ここでWmiの(managementClassに代入(指定)されいる)クラス全体の情報を格納している
-                mc = new ManagementClass(managementClass);
+                // Wmiクラスの全プロパティを格納
+                mc = new ManagementClass(AutoProps.managementClass);
                 moc = mc.GetInstances();
 
-                //nullチェックをし、Null系のException回避をしている
+                // nullチェックをし、NullException回避をしている
             } while (mc == null || moc == null);
 
-                // ここでclassPropertyに代入(指定)されている値で返したい値を"foreach"で出している
+                // mocに格納された中から指定されたプロパティの値を"result"へ格納する
                 foreach (ManagementObject mo in moc)
                 {
-                    result = mo[classProperty].ToString();
+                    result = mo[AutoProps.classProperty].ToString();
                     mo.Dispose();
                 }
 
                 moc.Dispose();
                 mc.Dispose();
-
+                // 結果を返す
                 return result;
         }
 
         /// <summary>
-        /// AutoProps.csのmanagementClass、Getter、Setterのプロパティを利用して、取得した
-        /// Wmiの情報"全て"を返すメソッド
+        /// Wmiクラスの中の"全プロパティ"を返す
         /// </summary>
-        /// <param name="managementClass">AutoProps.csのmanagementClassGetter、Setterのプロパティの値を参照している</param>
-        /// <returns>上記のプロパティを利用してWmi情報"全て"を取得した値を"ManagementObjectCollection"型で返している</returns>
-        private ManagementObjectCollection wmiAll(string managementClass)
+        /// <returns指定されたクラスの"全プロパティ"が入った"コレクション(ManagementObjectCollection)"を返す></returns>
+        private ManagementObjectCollection wmiAll()
         {
             do
             {
-                // ここでWmiの(managementClassに代入(指定)されいる)クラス全体の情報を格納している
-                mc = new ManagementClass(managementClass);
+                // Wmiクラスの全プロパティを格納
+                mc = new ManagementClass(AutoProps.managementClass);
                 moc = mc.GetInstances();
-                //nullチェックをし、Null系のException回避をしている
+                //nullチェックをし、NullException回避をしている
             } while (mc == null || moc == null);
 
             mc.Dispose();
-
+            // 結果を返す
             return moc;
         }
     }

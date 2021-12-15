@@ -6,36 +6,37 @@
     class AutoProps
     {
         /// <summary>
-        /// WmiOperation.csにある、wmiInfoメソッドの取り出したい"ManagermentClass"名を格納するプロパティ
+        /// Wmiのクラス名の"文字列"
         /// </summary>
         /// <example> AutoProps.managementClass = "Win32_PhysicalMemory";</example>
         public static string managementClass { get; set; }
 
         /// <summary>
-        /// WmiOperation.csにある、wmiInfoメソッドの取り出したい"ClassProperty"名を格納するプロパティ
+        /// Wmiクラスのプロパティー名の"文字列"
         /// </summary>
         /// <example> AutoProps.classProperty = "SMBIOSMemoryType";</example>
         public static string classProperty { get; set; }
 
         /// <summary>
-        /// RegSet.csにある、レジストリキーのある所への絶対パスを格納するプロパティ
+        /// レジストリキーへの絶対パスの"文字列"
         /// </summary>
         /// <example> AutoProps.regKeyPass = @"\HKEY_LOCAL_MACHINE\SOFTWARE\..." </example>
         public static string regKeyPass { get; set; }
 
         /// <summary>
-        /// RegSet.cs にある、レジストリキーの中のサブキーの名前を格納するプロパティ
+        /// レジストリキーの中のサブキーの名前の"文字列"
         /// </summary>
-        /// <example> AutoProps.regKeyPass = "Example";
+        /// <example> AutoProps.regKeyPass = "Example"; </example>
         public static string regSubKeyName { get; set; }
 
         /// <summary>
-        /// Reg.csにある、サブキーへ"String型"を格納する"値"を格納するプロパティ
+        /// サブキーへ格納する"文字列"
         /// </summary>
+        /// <example> AutoProps.regSubKeyName = "Example"; </example>
         public static string regValue { get; set; }
 
         /// <summary>
-        /// Reg.csにある、レジストリサブキーへ入力するデータタイプを選択する変数のプロパティ
+        /// レジストリサブキーへ入力するデータタイプを選択する文字列(現在は"String"か"Int"のみ)
         /// </summary>
         public static string inputType { get; set; }
     }

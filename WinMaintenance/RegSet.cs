@@ -1,88 +1,113 @@
 ﻿namespace WinMaintenance
 {
     class RegSet
-    {/// <summary>
-     /// ドキュメンテーション作成途中
-     /// </summary>
-     /// <param name="regKeyPass"></param>
-     /// <param name="regSubkeyName"></param>
-     /// <returns></returns>
-
+    {
+        /// <summary>
+        /// regCurrentValueGetのカプセルかみたいなやつ(意味あるのかなこれ...)
+        /// </summary>
+        /// <returns>サブキーに設定されている値を返す</returns>
         public string regCurrentValueReturn()
         {
-            return regCurrentValueGet(AutoProps.regKeyPass, AutoProps.regSubKeyName);
+            return regCurrentValueGet();
         }
+
+        /// <summary>
+        /// regLocalMachineGetのカプセルかみたいなやつ(意味あるのかなこれ...)
+        /// </summary>
+        /// <returns>サブキーに設定されている値を返す</returns>
         public string regLocaValueReturn()
         {
-            return regLocalValueGet(AutoProps.regKeyPass, AutoProps.regSubKeyName);
+            return regLocalValueGet();
         }
-        // CurrentUserの値を読み取る"String"で返す
-        private string regCurrentValueGet(string regKeyPass, string regName)
-        {
-            Microsoft.Win32.RegistryKey regkey =
-                Microsoft.Win32.Registry.CurrentUser.OpenSubKey(regKeyPass, true);
 
+        /// <summary>
+        /// CurrentUserの値を読み取る"文字列"で返す
+        /// </summary>
+        /// <returns>サブキーに設定されている値を返す</returns>
+        private string regCurrentValueGet()
+        {
+            //レジストリキーを開き、指定したパスが存在しないときは "none" が返される
+            Microsoft.Win32.RegistryKey regkey =
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey(AutoProps.regKeyPass, true);
             if (regkey == null) return "none";
 
-            //文字列を読み込む
-            //指定した名前の値が存在しないときは null が返される
-            return (regkey.GetValue(regName, "none").ToString());
-
-        }
-        // LocalMachineの値を読み取る"String"で返す
-        private string regLocalValueGet(string regKeyPass, string regName)
-        {
-            Microsoft.Win32.RegistryKey regkey =
-                Microsoft.Win32.Registry.LocalMachine.OpenSubKey(regKeyPass, true);
-
-            if (regkey == null) return "none";
-
-            //文字列を読み込む
-            //指定した名前の値が存在しないときは null が返される
-            return (regkey.GetValue(regName, "none").ToString());
+            //サブキーの文字列、数値を読み込む
+            //指定した名前の値が存在しないときは "none" が返される
+            return (regkey.GetValue(AutoProps.regSubKeyName, "none").ToString());
 
         }
 
-
-        // cu = CurrentUserの値を変更する
-        private void cuRegWrite(string regKeyPass, string regSubKeyName, string regValue, string inputType)
+        /// <summary>
+        /// LocalMachineの値を読み取る"String"で返す
+        /// </summary>
+        /// <returns>サブキーに設定されている値を返す</returns>
+        private string regLocalValueGet()
         {
-            //キー（HKEY_CURRENT_USER\Software\test\sub）を開く
+            //レジストリキーを開き、指定したパスが存在しないときは"独自Exception"が返される
             Microsoft.Win32.RegistryKey regkey =
-                Microsoft.Win32.Registry.CurrentUser.OpenSubKey(regKeyPass);
+                Microsoft.Win32.Registry.LocalMachine.OpenSubKey(AutoProps.regKeyPass, true);
+            if (regkey == null) /*ここに独自Exceptionを返す記述*/ return "none"; //これは一時的な記述...だと思う
 
-            //文字列を書き込む（REG_SZで書き込まれる）
-            if (inputType.Contains("String"))
+                //サブキーの文字列、数値を読み込む
+                //指定した名前の値が存在しないときは "none" が返される
+                return (regkey.GetValue(AutoProps.regSubKeyName, "none").ToString());
+        }
+
+        //製作途中
+        public void cuRegWrite()
+        {
+            //cuRegSet(AutoProps.regKeyPass,)
+        }
+
+        /// <summary>
+        /// CurrentUserの指定されたサブキーの値を変更する
+        /// </summary>
+        private void cuRegSet()
+        {
+            //レジストリキーを開き、指定したパスが存在しないときは"独自Exception"が返される
+            Microsoft.Win32.RegistryKey regkey =
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey(AutoProps.regKeyPass);
+            if (regkey == null) //ここに独自Exceptionを返す記述
+
+            //inputTypeを参照し、"String"か"int"かを判断する 関係ないタイプであれば"独自Exception"を返す
+            if (AutoProps.inputType.Contains("String"))
             {
-                regkey.SetValue(regSubKeyName, regValue);
+                //文字列を書き込む（REG_SZで書き込まれる）
+                regkey.SetValue(AutoProps.regSubKeyName, AutoProps.regValue);
             }
-            //整数（Int32）を書き込む（REG_DWORDで書き込まれる）
-            else if (inputType.Contains("Int"))
+            else if (AutoProps.inputType.Contains("Int"))
             {
-                regkey.SetValue(regSubKeyName, System.Convert.ToInt32(regValue));
+                //整数（Int32）を書き込む（REG_DWORDで書き込まれる）
+                regkey.SetValue(AutoProps.regSubKeyName, System.Convert.ToInt32(AutoProps.regValue));
             }
             //閉じる
             regkey.Close();
         }
 
 
-        // lm = LocalMachineの値を変更する
-        private void lmRegWrite(string regKeyPass, string regSubKeyName, string regValue, string inputType)
+        /// <summary>
+        /// LocalMachineの指定されたサブキーの値を変更する
+        /// </summary>
+        private void lmRegSet()
         {
-            //キー（HKEY_CURRENT_USER\Software\test\sub）を開く
+            //レジストリキーを開き、指定したパスが存在しないときは"独自Exception"が返される
             Microsoft.Win32.RegistryKey regkey =
-                Microsoft.Win32.Registry.LocalMachine.OpenSubKey(regKeyPass);
+                Microsoft.Win32.Registry.LocalMachine.OpenSubKey(AutoProps.regKeyPass);
+            if (regkey == null) //ここに独自Exceptionを返す記述
 
-            //文字列を書き込む（REG_SZで書き込まれる）
-            if (inputType.Contains("String"))
-            {
-                regkey.SetValue(regSubKeyName, regValue);
-            }
-            //整数（Int32）を書き込む（REG_DWORDで書き込まれる）
-            else if (inputType.Contains("Int"))
-            {
-                regkey.SetValue(regSubKeyName, System.Convert.ToInt32(regValue));
-            }
+                //inputTypeを参照し、"String"か"int"かを判断する 関係ないタイプであれば"独自Exception"を返す
+                if (AutoProps.inputType.Contains("String"))
+                {
+                    //文字列を書き込む（REG_SZで書き込まれる）
+                    regkey.SetValue(AutoProps.regSubKeyName, AutoProps.regValue);
+                }
+                else if (AutoProps.inputType.Contains("Int"))
+                {
+                    //整数（Int32）を書き込む（REG_DWORDで書き込まれる）
+                    regkey.SetValue(AutoProps.regSubKeyName, System.Convert.ToInt32(AutoProps.regValue));
+                }
+            //閉じる
+            regkey.Close();
         }
     }
 }

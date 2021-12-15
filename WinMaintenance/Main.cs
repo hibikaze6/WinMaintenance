@@ -17,6 +17,9 @@ namespace WinMaintenance
 {
     public partial class Main : Form
     {
+        /// <summary>
+        /// Main それ以上でも以下でもない
+        /// </summary>
         public Main()
         {
             InitializeComponent();
@@ -26,13 +29,7 @@ namespace WinMaintenance
         /// Taskでの操作のWMI関係のデッドロック防止の"testLock"
         /// </summary>
         /// 
-        public readonly object testLock = new object();
-
-        /// <summary>
-        /// trueになるとCPUとメモリ使用容量を無限ループで取得するループを抜けるようにする(予定) ※なぜか動かん
-        /// </summary>
-        /// <param name="formEnd_Flg">trueでループEnd</param>
-        bool formEnd_Flg = false;
+        public readonly object taskLock = new object();
 
         /// <summary>
         /// WMIの情報をとってくるメソッド
@@ -43,38 +40,8 @@ namespace WinMaintenance
         /// </example>
         WmiOperation WmiOperation = new WmiOperation();
 
-        /// <summary>
-        /// なんか処理を別にしないとフォーム固まる(Task.Runの中でできない件)
-        /// ここにはInvoke処理でFormの値が変更される処理を書くところ
-        /// </summary>
-        /// 
-        private void setDiskStatusChange()
-        {
-            lock (testLock)
-            {
-                //diskListCbへ先に"Win32_DiskDrive"の"Caption"を入れて、それから最初に取得できたディスクの空き容量を出す
-                AutoProps.managementClass = "Win32_LogicalDisk";
-                foreach (ManagementObject mo in WmiOperation.getWmiAll())
-                {
-                    bool b = (bool)Invoke(new delMo(getDiskListCbText), mo);
-                    //あえて分かりやすく1024で3回割っている(元の数値はバイトで出ているため)
-                    if (b is true)
-                    {
-                        //計算部分
-                        double maxDiskSizeGB = Math.Round(double.Parse(mo["Size"].ToString()) / 1024 / 1024 / 1024, 1);
-                        double freeDiskDizeGB = Math.Round(double.Parse(mo["FreeSpace"].ToString()) / 1024 / 1024 / 1024, 1);
+        //ここにはInvoke処理でFormの値が変更される処理を書くところ ～ここから～
 
-                        Invoke(new delDouble2(setDiskStatusText), maxDiskSizeGB, freeDiskDizeGB);
-
-
-                    }
-                }
-            }
-        }
-        private bool getDiskListCbText(ManagementObject mo) 
-        {
-            return diskListCb.Text.Contains(mo["Caption"].ToString());
-        }
         private void setCpuProgressValue(int cpuUsePer)
         {
             cpuProgress.Value = cpuUsePer;
@@ -94,6 +61,11 @@ namespace WinMaintenance
         {
             memoryAvailableLabel.Text = memoryAvailableLabelText + "GB";
         }
+        /// <summary>
+        /// WmiOperationでGetし、渡されたディスクの最大容量とディスクの空き容量を再計算し、GBで出して、Formに反映している。
+        /// </summary>
+        /// <param name="maxDiskSizeGB">ディスクの最大容量をGBで、"浮動小数点"で出している</param>
+        /// <param name="freeDiskDizeGB">ディスクの空き容量を 〃 </param>
         private void setDiskStatusText(double maxDiskSizeGB, double freeDiskDizeGB)
         {
             diskProgress.Maximum = Convert.ToInt32(maxDiskSizeGB);
@@ -102,21 +74,37 @@ namespace WinMaintenance
             diskUsePerLabel.Text = Math.Round(Math.Floor(Convert.ToDouble(freeDiskDizeGB)) / (Convert.ToDouble(maxDiskSizeGB)) * 100.0).ToString() + "% Free";
             diskAvailableLabel.Text = maxDiskSizeGB.ToString() + "GB/" + freeDiskDizeGB.ToString() + "GB Free";
         }
-        private void setNowTimeLabelChange(string nowTimeLabelText)
+
+        /// <summary>
+        /// 受け取った現在時刻をnowTimeLabelへ反映する。
+        /// </summary>
+        /// <param name="nowTimeLabelText">現在時刻の"文字列"</param>
+        private void setNowTimeLabelText(string nowTimeLabelText)
         {
             nowTimeLabel.Text = nowTimeLabelText;
         }
-        /// <summary>
-        /// ここにはInvoke処理でFormの値が変更される処理を書くところ ～End～
-        /// </summary>
 
         /// <summary>
-        /// AutoPropsへWmiの引き出したい情報を代入して、InvokeでDelegateのメソッドへ代入してFormの値を変更させるメソッド(下記二つのメソッド)
+        /// moの中に複数入っている"Win32_LogicalDisk"の"ドライブの情報"(例えば"C:"、"D:")から、diskListCbに選択されている、
+        /// ドライブ文字の情報を出せるように、Containsで現在"mo"の中に入ってる"ドライブ文字"の"Caption"プロパティと選択されている文字を比較し、
+        /// どちらも同じドライブ文字になった時にtrueを返している
         /// </summary>
-        /// <returns>正常終了した際にint型の0を返す</returns>
+        /// <param name="mo">ここではWin32_LogicalDiskの情報を格納している</param>
+        /// <returns></returns>
+        private bool getDiskListCbText(ManagementObject mo)
+        {
+            return diskListCb.Text.Contains(mo["Caption"].ToString());
+        }
+
+        // ここにはInvoke処理でFormの値が変更される処理を書くところ ～End～
+
+        /// <summary>
+        /// CPUの使用率を取得し、Formへ反映する
+        /// </summary>
+        /// <returns>よくわからないけど返さないとTask関係がエラーなるから"数値型"を返している</returns>
         private int cpuUsePercentChange()
         {
-            lock (testLock)
+            lock (taskLock)
             {
                 // プロパティを設定してWmiから情報を抜き出す
                 AutoProps.managementClass = "Win32_Processor";
@@ -128,102 +116,127 @@ namespace WinMaintenance
             }
                 return 0;
         }
+
+        /// <summary>
+        /// メモリの最大容量と空き容量を計算し、Formへ反映する
+        /// </summary>
+        /// <returns>よくわからないけど返さないとTask関係がエラーなるから"数値型"を返している</returns>
         private int memoryUsePercentChange()
         {
+            //スコープの関係上ここで宣言、初期化
             var maxMemory = 0.0;
             var freeMemory = 0.0;
 
-            lock (testLock)
+            lock (taskLock)
             {
-                // プロパティを設定してWmiから情報を抜き出す
+                // Wmiクラスを指定
                 AutoProps.managementClass = "Win32_OperatingSystem";
-                AutoProps.classProperty = "TotalVisibleMemorySize";
 
+                // メモリ最大値を計算
+                AutoProps.classProperty = "TotalVisibleMemorySize";
                 // メモリ最大を○○.○GB表記にするために計算結果をdoubleParceしてから変数に代入している
                 maxMemory = Math.Floor(double.Parse(WmiOperation.getWmiInfo()) / 1024.0 / 1024.0 * 10) / 10;
 
+                //空きメモリ容量を計算
                 AutoProps.classProperty = "FreePhysicalMemory";
-
                 // 空きメモリ容量を 〃
                 freeMemory = Math.Floor(double.Parse(WmiOperation.getWmiInfo()) / 1024.0 / 1024.0 * 10) / 10;
             }
 
-                // 値の確認テスト用
-                //MessageBox.Show(maxMemory.ToString());
-                //MessageBox.Show(freeMemory.ToString());
-                
-
-                // Formに取得した値をFormに代入する
+                // Formに取得した値をInvokeで代入する
                 Invoke(new delInt(setMaxMemoryProgressValue), Convert.ToInt32(maxMemory * 10));
                 Invoke(new delInt(setMemoryProgressValue), (memoryProgress.Maximum - Convert.ToInt32(freeMemory * 10)));
                 Invoke(new delStr(setMemoryAvailableLabelText), ("UseMem" + maxMemory + "GB" + " / " + (maxMemory - freeMemory).ToString()));
 
-
-            return 0;
-        }
-        private int nowTimeLabelChange()
-        {
-            Thread.Sleep(500);
-            Invoke(new delStr(setNowTimeLabelChange), DateTime.Now.ToString("yyyy MM-dd HH:mm"));
             return 0;
         }
 
         /// <summary>
+        /// DiskListCbで選択されているドライブの情報を計算し、Formへ反映する
+        /// </summary>
+        private void setDiskStatusChange()
+        {
+            lock (taskLock)
+            {
+                //diskListCbへ先に"Win32_DiskDrive"の"Caption"を入れて、それから最初に取得できたディスクの空き容量を出す
+                AutoProps.managementClass = "Win32_LogicalDisk";
+                foreach (ManagementObject mo in WmiOperation.getWmiAll())
+                {
+                    // "Form_Load" の時点で容量が出せるものだけで絞られておりnull処理が要らない。
+                    // getDiskListCbText()で"DiskListCb"で選択されているものだけ選ばれるようにしてある
+                    bool b = (bool)Invoke(new delMo(getDiskListCbText), mo);
+                    if (b is true)
+                    {
+                        //計算部分
+                        //あえて分かりやすく1024で3回割ってGBにして数値を出している(元の数値はバイトで出ているため)
+                        double maxDiskSizeGB = Math.Round(double.Parse(mo["Size"].ToString()) / 1024 / 1024 / 1024, 1);
+                        double freeDiskDizeGB = Math.Round(double.Parse(mo["FreeSpace"].ToString()) / 1024 / 1024 / 1024, 1);
+
+                        Invoke(new delDouble2(setDiskStatusText), maxDiskSizeGB, freeDiskDizeGB);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// なんとなく追加した右上の時計を、Formへ反映する
+        /// </summary>
+        /// <returns>よくわからないけど返さないとTask関係がエラーなるから"数値型"を返している</returns>
+        private int nowTimeLabelChange()
+        {
+            Thread.Sleep(500);
+            //時計を表示、更新する
+            Invoke(new delStr(setNowTimeLabelText), DateTime.Now.ToString("yyyy MM-dd HH:mm"));
+            return 0;
+        }
+
+        
+
+        /// <summary>
         /// メインフォームがロードされる時にに動作するメソッド
-        /// ・CPU名を出す
-        /// ・memUsePerTaskを生成し、別スレッドにてメモリの使用量をFormで出す(ProgressBar、Label)
-        /// ・cpuUsePerTaskを生成し、〃
-        /// ・"Task.WhenAll"は処理終わるまで待ってる(理由はAutoProps.managementClassとAutoProps.classPropertyのプロパティーの変更が
-        /// Taskを二つ同時に動かすと変更が混ざってエラー起こすので一つずつ処理している
+        /// ・CPU名、それに対応した画像を出す
+        /// ・GPU名、〃
+        /// ・メモリタイプ、速度を出す。
+        /// ・memUsePerTask(現在は _)を生成し、別スレッドにてメモリの使用量を計算、Formへ反映(memoryProgress、memUsePerLabel、memoryTypeLabel)
+        /// ・cpuUsePerTask(現在は _ )を生成し、CPU名、(cpuProgress、cpuUsePerLabel、cpuNameLabel)
+        /// ・nowTimeTask(現在は _ )を生成し、DateTimNowで現在時間を出しnowTimeLabelへ反映
         /// ・メモリのタイプ、速度を出している。
         /// ・GPU、CPUの種類の画像をWMIから情報を取得し、表示している。
         /// ・ディスクの情報を全て出し、空き容量を％と数値で表示する。
         /// </summary>
-        /// <param name="sender">自動生成されたイベントハンドラ</param>
-        /// <param name="e">自動生成されたイベントハンドラ</param>
         private async void Main_Load(object sender, EventArgs e)
         {
+            //CPU情報関連の処理
             // CPUの名前を取得し、"cpuNameLabel"Formに反映する
             AutoProps.managementClass = "Win32_Processor";
             AutoProps.classProperty = "Name";
             cpuNameLabel.Text = WmiOperation.getWmiInfo();
+            //搭載Cpuによって"gpuPictureBox"の画像を変える
+            try
+            {
+                if (cpuNameLabel.Text.Contains("Intel"))
+                {
+                    cpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\CpuLogo\INTELCPU_BADGE.png");
+                }
+                else if (cpuNameLabel.Text.Contains("AMD"))
+                {
+                    cpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\CpuLogo\AMDCPU_BADGE.png");
+                }
+                else
+                {
+                    cpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\CpuLogo\OTHERCPU_BADGE.png");
+                }
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                gpuPictureBox.Image = null;
+            }
 
+            //GPU情報関連の処理
             // GPUの名前を取得し、"gpuNameLabel"Formに反映する
             AutoProps.managementClass = "Win32_VideoController";
             AutoProps.classProperty = "Name";
             gpuNameLabel.Text = WmiOperation.getWmiInfo();
-
-            //Memoryのタイプを取得し、"memoryTypeLabel"Formに反映する
-            AutoProps.managementClass = "Win32_PhysicalMemory";
-            AutoProps.classProperty = "SMBIOSMemoryType";
-            //SMBIOSMemoryType is 20 = DDR, 21 is DDR2, 22 is DDR2 FB-DIMM
-            //24 is DDR3, 26 is DDR4. DDR5 is Unknown
-            if (WmiOperation.getWmiInfo().Equals("20"))
-            {
-                memoryTypeLabel.Text = "DDR-";
-            }
-            else if (WmiOperation.getWmiInfo().Equals("21") || WmiOperation.getWmiInfo().Equals("22"))
-            {
-                memoryTypeLabel.Text = "DDR2-";
-            }
-            else if (WmiOperation.getWmiInfo().Equals("24"))
-            {
-                memoryTypeLabel.Text = "DDR3-";
-            }
-            else if(WmiOperation.getWmiInfo().Equals("26"))
-            {
-                memoryTypeLabel.Text = "DDR4-";
-            }
-            else
-            {
-                memoryTypeLabel.Text = "DDR5-";
-            }
-
-            // Memoryの周波数を取得し、"memoryTypeLabel"Formに反映する
-            AutoProps.managementClass = "Win32_PhysicalMemory";
-            AutoProps.classProperty = "ConfiguredClockSpeed";
-            memoryTypeLabel.Text = memoryTypeLabel.Text + WmiOperation.getWmiInfo();
-
             //搭載Gpuによって"gpuPictureBox"の画像を変える
             try
             {
@@ -249,27 +262,36 @@ namespace WinMaintenance
                 gpuPictureBox.Image = null;
             }
 
-            //搭載Cpuによって"gpuPictureBox"の画像を変える
-            try
+            //Memory関連の処理
+            //Memoryのタイプを取得し、"memoryTypeLabel"Formに反映する
+            AutoProps.managementClass = "Win32_PhysicalMemory";
+            AutoProps.classProperty = "SMBIOSMemoryType";
+            //SMBIOSMemoryType is 20 = DDR, 21 = DDR2, 22 = DDR2 FB-DIMM, 24 = DDR3, 26 = DDR4. DDR5 is Unknown
+            if (WmiOperation.getWmiInfo().Equals("20"))
             {
-            if (cpuNameLabel.Text.Contains("Intel"))
-            {
-                cpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\CpuLogo\INTELCPU_BADGE.png");
+                memoryTypeLabel.Text = "DDR-";
             }
-            else if (cpuNameLabel.Text.Contains("AMD"))
+            else if (WmiOperation.getWmiInfo().Equals("21") || WmiOperation.getWmiInfo().Equals("22"))
             {
-                cpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\CpuLogo\AMDCPU_BADGE.png");
+                memoryTypeLabel.Text = "DDR2-";
+            }
+            else if (WmiOperation.getWmiInfo().Equals("24"))
+            {
+                memoryTypeLabel.Text = "DDR3-";
+            }
+            else if(WmiOperation.getWmiInfo().Equals("26"))
+            {
+                memoryTypeLabel.Text = "DDR4-";
             }
             else
             {
-                cpuPictureBox.Image = System.Drawing.Image.FromFile(@".\WMResource\Image\CpuLogo\OTHERCPU_BADGE.png");
+                memoryTypeLabel.Text = "DDR5-";
             }
-            }
-            catch (System.IO.FileNotFoundException)
-            {
-                gpuPictureBox.Image = null;
-            }
+            // Memoryの周波数を取得し、"memoryTypeLabel"Formに反映する
+            AutoProps.classProperty = "ConfiguredClockSpeed";
+            memoryTypeLabel.Text = memoryTypeLabel.Text + WmiOperation.getWmiInfo();
 
+            //ディスク関連の処理
             //diskListCbへ先に"Win32_DiskDrive"の"Caption"を入れて、それから最初に取得できたディスクの空き容量を出す
             AutoProps.managementClass = "Win32_LogicalDisk";
             foreach (ManagementObject mo in WmiOperation.getWmiAll())
@@ -279,11 +301,15 @@ namespace WinMaintenance
                     diskListCb.Items.Add(mo["Caption"] + " Drive");
                 }
             }
+            //先にプルダウンの初期選択を配列1番目に設定しておき、Disk情報群を選択せずとも、表示させるようにする
             diskListCb.SelectedIndex = 0;
-            //この先"diskListCb_SelectedIndexChanged"イベントで表示してくれるため書く必要はない
+            //この先↑の選択動作により、"diskListCb_SelectedIndexChanged"イベントで表示してくれるため書く必要はない
 
+            //ここでSettingForm関連の処理
+            //レジストリ関連の設定を読み込み、Formへ反映
             regSetteingGet();
 
+            //常時更新したい値のTask群
             // Formを閉じた際に"fromEnd_Flg"がtrueになるのでループから抜け出す(予定) ※なぜか動かん...
             while (!formEnd_Flg)
             {
@@ -296,13 +322,17 @@ namespace WinMaintenance
 
             }
         }
+
+        /// <summary>
+        /// trueになるとCPUとメモリ使用容量を無限ループで取得するループを抜けるようにする(予定) ※なぜか動かん
+        /// </summary>
+        bool formEnd_Flg = false;
+
         /// <summary>
         /// Formを閉じる際に"formEnd_Flg"をtrueにして"memUsePerTask"と"cpuUsePerTask"の無限ループタスクを終わらせる(予定) 
-        /// "await Task.WhenAll()"でも上記のタスクを終了待ちして～を実現したいけども...(やっぱブレークモードは行ったりエラー起こす...)
+        /// "await Task.WhenAll()"でも上記のタスクを終了待ちして～を実現したいけども...(やっぱブレークモードはいったりエラー起こす...)
         /// ※うまく動かない...
         /// </summary>
-        /// <param name="sender">自動生成されたイベントハンドラ</param>
-        /// <param name="e">自動生成されたイベントハンドラ</param>
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             formEnd_Flg = true;
@@ -312,16 +342,18 @@ namespace WinMaintenance
         /// <summary>
         /// Applyボタン押したら"Settingsタブ"の設定状況を反映する。（予定）
         /// </summary>
-        /// <param name="sender">自動生成されたイベントハンドラ</param>
-        /// <param name="e">自動生成されたイベントハンドラ</param>
         private void applyButton_Click(object sender, EventArgs e)
         {
             MessageBox.Show("OK");
         }
 
+        /// <summary>
+        /// ドライブ文字が格納されている"diskListCb_SelectedIndex"のドライブ文字を変更した際に空き容量を計算し出す
+        /// </summary>
         private async void diskListCb_SelectedIndexChanged(object sender, EventArgs e)
         {
-                await Task.Run(() => setDiskStatusChange());
+            //サブスレッドで動作させないとメインスレッドだとLockした際にデッドロックが起こりプログラムがフリーズしてしまう
+            await Task.Run(() => setDiskStatusChange());
         }
     }
 }
