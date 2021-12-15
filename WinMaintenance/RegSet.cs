@@ -3,7 +3,7 @@
     class RegSet
     {
         /// <summary>
-        /// regCurrentValueGetのカプセルかみたいなやつ(意味あるのかなこれ...)
+        /// regCurrentValueGet()のカプセル化みたいなやつ(意味あるのかなこれ...)
         /// </summary>
         /// <returns>サブキーに設定されている値を返す</returns>
         public string regCurrentValueReturn()
@@ -12,7 +12,7 @@
         }
 
         /// <summary>
-        /// regLocalMachineGetのカプセルかみたいなやつ(意味あるのかなこれ...)
+        /// regLocalMachineGet()のカプセル化みたいなやつ(意味あるのかなこれ...)
         /// </summary>
         /// <returns>サブキーに設定されている値を返す</returns>
         public string regLocaValueReturn()
@@ -53,10 +53,20 @@
                 return (regkey.GetValue(AutoProps.regSubKeyName, "none").ToString());
         }
 
-        //製作途中
+        /// <summary>
+        /// cuRegSet()のカプセル化みたいなやつ(意味あるのかなこれ...)
+        /// </summary>
         public void cuRegWrite()
         {
-            //cuRegSet(AutoProps.regKeyPass,)
+            cuRegSet();
+        }
+
+        /// <summary>
+        /// lmRegSet()のカプセル化みたいなやつ(意味あるのかなこれ...)
+        /// </summary>
+        public void lmRegWrite() 
+        {
+            lmRegSet();
         }
 
         /// <summary>
@@ -84,7 +94,6 @@
             regkey.Close();
         }
 
-
         /// <summary>
         /// LocalMachineの指定されたサブキーの値を変更する
         /// </summary>
@@ -92,8 +101,8 @@
         {
             //レジストリキーを開き、指定したパスが存在しないときは"独自Exception"が返される
             Microsoft.Win32.RegistryKey regkey =
-                Microsoft.Win32.Registry.LocalMachine.OpenSubKey(AutoProps.regKeyPass);
-            if (regkey == null) //ここに独自Exceptionを返す記述
+                Microsoft.Win32.Registry.LocalMachine.CreateSubKey(AutoProps.regKeyPass);
+            if (regkey == null) { } //ここに独自Exceptionを返す記述
 
                 //inputTypeを参照し、"String"か"int"かを判断する 関係ないタイプであれば"独自Exception"を返す
                 if (AutoProps.inputType.Contains("String"))

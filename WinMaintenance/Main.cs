@@ -194,7 +194,14 @@ namespace WinMaintenance
             return 0;
         }
 
-        
+        /// <summary>
+        /// ドライブ文字が格納されている"diskListCb_SelectedIndex"のドライブ文字を変更した際に空き容量を計算し出す
+        /// </summary>
+        private async void diskListCb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //サブスレッドで動作させないとメインスレッドだとLockした際にデッドロックが起こりプログラムがフリーズしてしまう
+            await Task.Run(() => setDiskStatusChange());
+        }
 
         /// <summary>
         /// メインフォームがロードされる時にに動作するメソッド
@@ -348,16 +355,9 @@ namespace WinMaintenance
         /// </summary>
         private void applyButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("OK");
-        }
+            regSettingWrite();
 
-        /// <summary>
-        /// ドライブ文字が格納されている"diskListCb_SelectedIndex"のドライブ文字を変更した際に空き容量を計算し出す
-        /// </summary>
-        private async void diskListCb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //サブスレッドで動作させないとメインスレッドだとLockした際にデッドロックが起こりプログラムがフリーズしてしまう
-            await Task.Run(() => setDiskStatusChange());
+            MessageBox.Show("OK");
         }
     }
 }
