@@ -37,7 +37,7 @@ namespace WinMaintenance
 
         //ここにはInvoke処理でFormの値が変更される処理を書くところ ～ここから～
 
-        private void setCpuProgressValue(int cpuUsePer)
+        private void SetCpuProgressValue(int cpuUsePer)
         {
             cpuProgress.Value = cpuUsePer;
             cpuUsePerLabel.Text = cpuUsePer.ToString() + "％ Use";
@@ -46,13 +46,13 @@ namespace WinMaintenance
         /// 受け取った現在のメモリ使用率をFormへ反映
         /// </summary>
         /// <param name="memoryUseCapa">memoryUsePercentChange()から計算され、受け取った</param>
-        private void setMemoryProgressValue(int memoryUseCapa)
+        private void SetMemoryProgressValue(int memoryUseCapa)
         {
             memoryProgress.Value = memoryUseCapa;
 
             memUsePerLabel.Text = Convert.ToString((Math.Floor((double)memoryUseCapa / memoryProgress.Maximum * 100.00))) + "％ Use";
         }
-        private void setMaxMemoryProgressValue(int memoryMaxValue) 
+        private void SetMaxMemoryProgressValue(int memoryMaxValue) 
         {
             memoryProgress.Maximum = memoryMaxValue;
         }
@@ -60,7 +60,7 @@ namespace WinMaintenance
         /// 受け取った現在のメモリ空きパーセントをFormへ反映する。
         /// </summary>
         /// <param name="memoryAvailableLabelText">memoryUsePercentChange()から渡された値</param>
-        private void setMemoryAvailableLabelText(string memoryAvailableLabelText)
+        private void SetMemoryAvailableLabelText(string memoryAvailableLabelText)
         {
             memoryAvailableLabel.Text = memoryAvailableLabelText + "GB";
         }
@@ -70,7 +70,7 @@ namespace WinMaintenance
         /// </summary>
         /// <param name="maxDiskSizeGB">setDiskStatusChange()から受け取った、ディスクの最大容量をGBで、"浮動小数点"で出している</param>
         /// <param name="freeDiskDizeGB">setDiskStatusChange()から受け取った、ディスクの空き容量を 〃 </param>
-        private void setDiskStatusText(double maxDiskSizeGB, double freeDiskDizeGB)
+        private void SetDiskStatusText(double maxDiskSizeGB, double freeDiskDizeGB)
         {
             diskProgress.Maximum = Convert.ToInt32(maxDiskSizeGB);
             diskProgress.Value = Convert.ToInt32(freeDiskDizeGB);
@@ -83,7 +83,7 @@ namespace WinMaintenance
         /// 受け取った現在時刻をnowTimeLabelへ反映する。
         /// </summary>
         /// <param name="nowTimeLabelText">nowTimeLabelChange()から受け取った現在時刻の"文字列"</param>
-        private void setNowTimeLabelText(string nowTimeLabelText)
+        private void SetNowTimeLabelText(string nowTimeLabelText)
         {
             nowTimeLabel.Text = nowTimeLabelText;
         }
@@ -95,7 +95,7 @@ namespace WinMaintenance
         /// </summary>
         /// <param name="mo">ここではWin32_LogicalDiskの情報を格納している</param>
         /// <returns></returns>
-        private bool getDiskListCbText(ManagementObject mo)
+        private bool GetDiskListCbText(ManagementObject mo)
         {
             return diskListCb.Text.Contains(mo["Caption"].ToString());
         }
@@ -106,7 +106,7 @@ namespace WinMaintenance
         /// CPUの使用率を取得し、Formへ反映する
         /// </summary>
         /// <returns>よくわからないけど返さないとTask関係がエラーなるから"数値型"を返している</returns>
-        private int cpuUsePercentChange()
+        private int CpuUsePercentChange()
         {
             lock (taskLock)
             {
@@ -116,7 +116,7 @@ namespace WinMaintenance
                 Thread.Sleep(500);
 
                 // Formに取得した値をFormに代入する
-                Invoke(new delInt(setCpuProgressValue), int.Parse(WmiOperation.getWmiInfo()));
+                Invoke(new DelInt(SetCpuProgressValue), int.Parse(WmiOperation.GetWmiInfo()));
             }
                 return 0;
         }
@@ -125,7 +125,7 @@ namespace WinMaintenance
         /// メモリの最大容量と空き容量を計算し、Formへ反映する
         /// </summary>
         /// <returns>よくわからないけど返さないとTask関係がエラーなるから"数値型"を返している</returns>
-        private int memoryUsePercentChange()
+        private int MemoryUsePercentChange()
         {
             //スコープの関係上ここで宣言、初期化
             var maxMemory = 0.0;
@@ -139,18 +139,18 @@ namespace WinMaintenance
                 // メモリ最大値を計算
                 AutoProps.classProperty = "TotalVisibleMemorySize";
                 // メモリ最大を○○.○GB表記にするために計算結果をdoubleParceしてから変数に代入している
-                maxMemory = Math.Floor(double.Parse(WmiOperation.getWmiInfo()) / 1024.0 / 1024.0 * 10) / 10;
+                maxMemory = Math.Floor(double.Parse(WmiOperation.GetWmiInfo()) / 1024.0 / 1024.0 * 10) / 10;
 
                 //空きメモリ容量を計算
                 AutoProps.classProperty = "FreePhysicalMemory";
                 // 空きメモリ容量を 〃
-                freeMemory = Math.Floor(double.Parse(WmiOperation.getWmiInfo()) / 1024.0 / 1024.0 * 10) / 10;
+                freeMemory = Math.Floor(double.Parse(WmiOperation.GetWmiInfo()) / 1024.0 / 1024.0 * 10) / 10;
             }
 
                 // Formに取得した値をInvokeで代入する
-                Invoke(new delInt(setMaxMemoryProgressValue), Convert.ToInt32(maxMemory * 10));
-                Invoke(new delInt(setMemoryProgressValue), (memoryProgress.Maximum - Convert.ToInt32(freeMemory * 10)));
-                Invoke(new delStr(setMemoryAvailableLabelText), ("UseMem" + maxMemory + "GB" + " / " + (maxMemory - freeMemory).ToString()));
+                Invoke(new DelInt(SetMaxMemoryProgressValue), Convert.ToInt32(maxMemory * 10));
+                Invoke(new DelInt(SetMemoryProgressValue), (memoryProgress.Maximum - Convert.ToInt32(freeMemory * 10)));
+                Invoke(new DelStr(SetMemoryAvailableLabelText), ("UseMem" + maxMemory + "GB" + " / " + (maxMemory - freeMemory).ToString()));
 
             return 0;
         }
@@ -158,17 +158,17 @@ namespace WinMaintenance
         /// <summary>
         /// DiskListCbで選択されているドライブの情報を計算し、Formへ反映する
         /// </summary>
-        private void setDiskStatusChange()
+        private void SetDiskStatusChange()
         {
             lock (taskLock)
             {
                 //diskListCbへ先に"Win32_DiskDrive"の"Caption"を入れて、それから最初に取得できたディスクの空き容量を出す
                 AutoProps.managementClass = "Win32_LogicalDisk";
-                foreach (ManagementObject mo in WmiOperation.getWmiAll())
+                foreach (ManagementObject mo in WmiOperation.GetWmiAll())
                 {
                     // "Form_Load" の時点で容量が出せるものだけで絞られておりnull処理が要らない。
                     // getDiskListCbText()で"DiskListCb"で選択されているものだけ選ばれるようにしてある
-                    bool b = (bool)Invoke(new delMo(getDiskListCbText), mo);
+                    bool b = (bool)Invoke(new DelMo(GetDiskListCbText), mo);
                     if (b is true)
                     {
                         //計算部分
@@ -176,7 +176,7 @@ namespace WinMaintenance
                         double maxDiskSizeGB = Math.Round(double.Parse(mo["Size"].ToString()) / 1024 / 1024 / 1024, 1);
                         double freeDiskDizeGB = Math.Round(double.Parse(mo["FreeSpace"].ToString()) / 1024 / 1024 / 1024, 1);
 
-                        Invoke(new delDouble2(setDiskStatusText), maxDiskSizeGB, freeDiskDizeGB);
+                        Invoke(new DelDouble2(SetDiskStatusText), maxDiskSizeGB, freeDiskDizeGB);
                     }
                 }
             }
@@ -186,11 +186,11 @@ namespace WinMaintenance
         /// なんとなく追加した右上の時計を、Formへ反映する
         /// </summary>
         /// <returns>よくわからないけど返さないとTask関係がエラーなるから"数値型"を返している</returns>
-        private int nowTimeLabelChange()
+        private int NowTimeLabelChange()
         {
             Thread.Sleep(500);
             //時計を表示、更新する
-            Invoke(new delStr(setNowTimeLabelText), DateTime.Now.ToString("yyyy MM-dd HH:mm"));
+            Invoke(new DelStr(SetNowTimeLabelText), DateTime.Now.ToString("yyyy MM-dd HH:mm"));
             return 0;
         }
 
@@ -200,7 +200,7 @@ namespace WinMaintenance
         private async void diskListCb_SelectedIndexChanged(object sender, EventArgs e)
         {
             //サブスレッドで動作させないとメインスレッドだとLockした際にデッドロックが起こりプログラムがフリーズしてしまう
-            await Task.Run(() => setDiskStatusChange());
+            await Task.Run(() => SetDiskStatusChange());
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace WinMaintenance
             // CPUの名前を取得し、"cpuNameLabel"Formに反映する
             AutoProps.managementClass = "Win32_Processor";
             AutoProps.classProperty = "Name";
-            cpuNameLabel.Text = WmiOperation.getWmiInfo();
+            cpuNameLabel.Text = WmiOperation.GetWmiInfo();
             //搭載Cpuによって"gpuPictureBox"の画像を変える
             try
             {
@@ -247,7 +247,7 @@ namespace WinMaintenance
             // GPUの名前を取得し、"gpuNameLabel"Formに反映する
             AutoProps.managementClass = "Win32_VideoController";
             AutoProps.classProperty = "Name";
-            gpuNameLabel.Text = WmiOperation.getWmiInfo();
+            gpuNameLabel.Text = WmiOperation.GetWmiInfo();
             //搭載Gpuによって"gpuPictureBox"の画像を変える
             try
             {
@@ -278,19 +278,19 @@ namespace WinMaintenance
             AutoProps.managementClass = "Win32_PhysicalMemory";
             AutoProps.classProperty = "SMBIOSMemoryType";
             //SMBIOSMemoryType is 20 = DDR, 21 = DDR2, 22 = DDR2 FB-DIMM, 24 = DDR3, 26 = DDR4. DDR5 is Unknown
-            if (WmiOperation.getWmiInfo().Equals("20"))
+            if (WmiOperation.GetWmiInfo().Equals("20"))
             {
                 memoryTypeLabel.Text = "DDR-";
             }
-            else if (WmiOperation.getWmiInfo().Equals("21") || WmiOperation.getWmiInfo().Equals("22"))
+            else if (WmiOperation.GetWmiInfo().Equals("21") || WmiOperation.GetWmiInfo().Equals("22"))
             {
                 memoryTypeLabel.Text = "DDR2-";
             }
-            else if (WmiOperation.getWmiInfo().Equals("24"))
+            else if (WmiOperation.GetWmiInfo().Equals("24"))
             {
                 memoryTypeLabel.Text = "DDR3-";
             }
-            else if(WmiOperation.getWmiInfo().Equals("26"))
+            else if(WmiOperation.GetWmiInfo().Equals("26"))
             {
                 memoryTypeLabel.Text = "DDR4-";
             }
@@ -300,12 +300,12 @@ namespace WinMaintenance
             }
             // Memoryの周波数を取得し、"memoryTypeLabel"Formに反映する
             AutoProps.classProperty = "ConfiguredClockSpeed";
-            memoryTypeLabel.Text = memoryTypeLabel.Text + WmiOperation.getWmiInfo();
+            memoryTypeLabel.Text = memoryTypeLabel.Text + WmiOperation.GetWmiInfo();
 
             //ディスク関連の処理
             //diskListCbへ先に"Win32_DiskDrive"の"Caption"を入れて、それから最初に取得できたディスクの空き容量を出す
             AutoProps.managementClass = "Win32_LogicalDisk";
-            foreach (ManagementObject mo in WmiOperation.getWmiAll())
+            foreach (ManagementObject mo in WmiOperation.GetWmiAll())
             {
                 if (mo["Size"] != null)
                 {
@@ -318,18 +318,18 @@ namespace WinMaintenance
 
             //ここでSettingForm関連の処理
             //レジストリ関連の設定を読み込み、Formへ反映
-            regSetteingGet();
+            RegSetteingGet();
 
             //常時更新したい値のTask群
             // Formを閉じた際に"fromEnd_Flg"がtrueになるのでループから抜け出す(予定) ※なぜか動かん...
             while (!formEnd_Flg)
             {
                 // メモリ使用率を別スレッドで変異させるTask.Run
-                _ = await Task.Run(() => { return memoryUsePercentChange(); });
+                _ = await Task.Run(() => { return MemoryUsePercentChange(); });
                 // CPU使用率を別スレッドで変異させるTask.Run
-                _ =  await Task.Run(() => { return cpuUsePercentChange(); });
+                _ =  await Task.Run(() => { return CpuUsePercentChange(); });
                 //MainFormの右上の時間を更新するTask.Run
-                _ = await Task.Run(() => { return nowTimeLabelChange(); });
+                _ = await Task.Run(() => { return NowTimeLabelChange(); });
 
             }
         }
@@ -355,7 +355,7 @@ namespace WinMaintenance
         /// </summary>
         private void applyButton_Click(object sender, EventArgs e)
         {
-            regSettingWrite();
+            RegSettingWrite();
 
             MessageBox.Show("OK");
         }

@@ -16,7 +16,7 @@ namespace WinMaintenance
         /// <summary>
         /// 現在のPCのレジストリの設定を取得し、画面の方へ反映する ※レジストリ弄るから慎重に！
         /// </summary>
-        private void regSetteingGet()
+        private void RegSetteingGet()
         {
             //レジストリのPathのライブラリ的な
             //[0] Picture "ThisPCPolicy" Path
@@ -53,9 +53,9 @@ namespace WinMaintenance
             //格納されているPathを選択
             AutoProps.regKeyPass = regKeyList[0];
             //"ピクチャ"フォルダが 表示 or 非表示 かチェック
-            if (!RegSet.regLocaValueReturn().Contains("Path is None"))
+            if (!RegSet.RegLocaValueReturn().Contains("Path is None"))
             {
-                if (RegSet.regLocaValueReturn().Contains("Hide")) 
+                if (RegSet.RegLocaValueReturn().Contains("Hide")) 
                 {
                     pcHidePictureCheckbox.Checked = true;
                 }
@@ -73,9 +73,9 @@ namespace WinMaintenance
             //格納されているPathを選択
             AutoProps.regKeyPass = regKeyList[1];
             //"ビデオ"フォルダが 表示 or 非表示 かチェック
-            if (!RegSet.regLocaValueReturn().Contains("Path is None"))
+            if (!RegSet.RegLocaValueReturn().Contains("Path is None"))
             {
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     pcHideVideoCheckbox.Checked = true;
                 }
@@ -93,9 +93,9 @@ namespace WinMaintenance
             //格納されているPathを選択
             AutoProps.regKeyPass = regKeyList[2];
             //"ダウンロード"フォルダが 表示 or 非表示 かチェック
-            if (!RegSet.regLocaValueReturn().Contains("Path is None"))
+            if (!RegSet.RegLocaValueReturn().Contains("Path is None"))
             {
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     pcHideDownloadCheckbox.Checked = true;
                 }
@@ -113,9 +113,9 @@ namespace WinMaintenance
             //格納されているPathを選択
             AutoProps.regKeyPass = regKeyList[3];
             //"ミュージック"フォルダが 表示 or 非表示 かチェック
-            if (!RegSet.regLocaValueReturn().Contains("Path is None"))
+            if (!RegSet.RegLocaValueReturn().Contains("Path is None"))
             {
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     pcHideMusicCheckbox.Checked = true;
                 }
@@ -133,9 +133,9 @@ namespace WinMaintenance
             //格納されているPathを選択
             AutoProps.regKeyPass = regKeyList[4];
             //"ドキュメント"フォルダが 表示 or 非表示 かチェック
-            if (!RegSet.regLocaValueReturn().Contains("Path is None"))
+            if (!RegSet.RegLocaValueReturn().Contains("Path is None"))
             {
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     pcHideDocumentCheckbox.Checked = true;
                 }
@@ -153,9 +153,9 @@ namespace WinMaintenance
             //格納されているPathを選択
             AutoProps.regKeyPass = regKeyList[5];
             //"デスクトップ"フォルダが 表示 or 非表示 かチェック
-            if (!RegSet.regLocaValueReturn().Contains("Path is None"))
+            if (!RegSet.RegLocaValueReturn().Contains("Path is None"))
             {
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     pcHideDesktopCheckbox.Checked = true;
                 }
@@ -173,14 +173,14 @@ namespace WinMaintenance
         /// <summary>
         /// regSettingSet()のカプセル化みたいなやつ(意味あるのかなこれ...)
         /// </summary>
-        public void regSettingWrite() 
+        public void RegSettingWrite() 
         {
-            regSettingSet();
+            RegSettingSet();
         }
         /// <summary>
         /// 設定タブの状況に応じてレジストリを書き換える所 ※レジストリ弄るから慎重に！
         /// </summary>
-        private void regSettingSet()
+        private void RegSettingSet()
         {
             //ここからLocalMachineを使用 PCのフォルダ非表示関係 "ThisPCPolicy" 関連の設定群
             AutoProps.regSubKeyName = "ThisPCPolicy";
@@ -192,11 +192,11 @@ namespace WinMaintenance
             if (!pcHidePictureCheckbox.Checked)
             {
                 //かつ"ピクチャ"フォルダーが表示設定の時に、非表示にする
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     AutoProps.regValue = "Show";
                     AutoProps.inputType = "String";
-                    RegSet.lmRegWrite();
+                    RegSet.LmRegWrite();
                 }
             }
             //"ピクチャ"フォルダーを非表示にする"項目にチェックがあるのであれば問答無用で"Hide"設定を書き込む
@@ -205,7 +205,7 @@ namespace WinMaintenance
             {
                 AutoProps.regValue = "Hide";
                 AutoProps.inputType = "String";
-                RegSet.lmRegWrite();
+                RegSet.LmRegWrite();
             }
 
             //PCの"ビデオ"フォルダを表示、非表示にできるか、また行うブロック
@@ -215,11 +215,11 @@ namespace WinMaintenance
             if (!pcHideVideoCheckbox.Checked)
             {
                 //かつ"ビデオ"フォルダーが表示設定の時に、非表示にする
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     AutoProps.regValue = "Show";
                     AutoProps.inputType = "String";
-                    RegSet.lmRegWrite();
+                    RegSet.LmRegWrite();
                 }
             }
             //"ビデオ"フォルダーを非表示にする"項目にチェックがあるのであれば問答無用で"Hide"設定を書き込む
@@ -228,7 +228,7 @@ namespace WinMaintenance
             {
                 AutoProps.regValue = "Hide";
                 AutoProps.inputType = "String";
-                RegSet.lmRegWrite();
+                RegSet.LmRegWrite();
             }
 
             //PCの"ダウンロード"フォルダを表示、非表示にできるか、また行うブロック
@@ -238,11 +238,11 @@ namespace WinMaintenance
             if (!pcHideDownloadCheckbox.Checked)
             {
                 //かつ"ダウンロード"フォルダーが表示設定の時に、非表示にする
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     AutoProps.regValue = "Show";
                     AutoProps.inputType = "String";
-                    RegSet.lmRegWrite();
+                    RegSet.LmRegWrite();
                 }
             }
             //"ダウンロード"フォルダーを非表示にする"項目にチェックがあるのであれば問答無用で"Hide"設定を書き込む
@@ -251,7 +251,7 @@ namespace WinMaintenance
             {
                 AutoProps.regValue = "Hide";
                 AutoProps.inputType = "String";
-                RegSet.lmRegWrite();
+                RegSet.LmRegWrite();
             }
 
             //PCの"ミュージック"フォルダを表示、非表示にできるか、また行うブロック
@@ -260,11 +260,11 @@ namespace WinMaintenance
             if (!pcHideMusicCheckbox.Checked)
             {
                 //かつ"ミュージック"フォルダーが表示設定の時に、非表示にする
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     AutoProps.regValue = "Show";
                     AutoProps.inputType = "String";
-                    RegSet.lmRegWrite();
+                    RegSet.LmRegWrite();
                 }
             }
             //"ミュージック"フォルダーを非表示にする"項目にチェックがあるのであれば問答無用で"Hide"設定を書き込む
@@ -273,7 +273,7 @@ namespace WinMaintenance
             {
                 AutoProps.regValue = "Hide";
                 AutoProps.inputType = "String";
-                RegSet.lmRegWrite();
+                RegSet.LmRegWrite();
             }
 
             //PCの"ドキュメント"フォルダを表示、非表示にできるか、また行うブロック
@@ -283,11 +283,11 @@ namespace WinMaintenance
             if (!pcHideDocumentCheckbox.Checked)
             {
                 //かつ"ドキュメント"フォルダーが表示設定の時に、非表示にする
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     AutoProps.regValue = "Show";
                     AutoProps.inputType = "String";
-                    RegSet.lmRegWrite();
+                    RegSet.LmRegWrite();
                 }
             }
             //"ミュージック"フォルダーを非表示にする"項目にチェックがあるのであれば問答無用で"Hide"設定を書き込む
@@ -296,7 +296,7 @@ namespace WinMaintenance
             {
                 AutoProps.regValue = "Hide";
                 AutoProps.inputType = "String";
-                RegSet.lmRegWrite();
+                RegSet.LmRegWrite();
             }
 
             //PCの"デスクトップ"フォルダを表示、非表示にできるか、また行うブロック
@@ -306,11 +306,11 @@ namespace WinMaintenance
             if (!pcHideDesktopCheckbox.Checked)
             {
                 //かつ"デスクトップ"フォルダーが表示設定の時に、非表示にする
-                if (RegSet.regLocaValueReturn().Contains("Hide"))
+                if (RegSet.RegLocaValueReturn().Contains("Hide"))
                 {
                     AutoProps.regValue = "Show";
                     AutoProps.inputType = "String";
-                    RegSet.lmRegWrite();
+                    RegSet.LmRegWrite();
                 }
             }
             //"デスクトップ"フォルダーを非表示にする"項目にチェックがあるのであれば問答無用で"Hide"設定を書き込む
@@ -319,7 +319,7 @@ namespace WinMaintenance
             {
                 AutoProps.regValue = "Hide";
                 AutoProps.inputType = "String";
-                RegSet.lmRegWrite();
+                RegSet.LmRegWrite();
             }
         }
     }

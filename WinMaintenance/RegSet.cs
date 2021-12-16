@@ -6,25 +6,25 @@
         /// regCurrentValueGet()のカプセル化みたいなやつ(意味あるのかなこれ...)
         /// </summary>
         /// <returns>サブキーに設定されている値を返す</returns>
-        public string regCurrentValueReturn()
+        public string RegCurrentValueReturn()
         {
-            return regCurrentValueGet();
+            return RegCurrentValueGet();
         }
 
         /// <summary>
         /// regLocalMachineGet()のカプセル化みたいなやつ(意味あるのかなこれ...)
         /// </summary>
         /// <returns>サブキーに設定されている値を返す</returns>
-        public string regLocaValueReturn()
+        public string RegLocaValueReturn()
         {
-            return regLocalValueGet();
+            return RegLocalValueGet();
         }
 
         /// <summary>
         /// CurrentUserの値を読み取る"文字列"で返す
         /// </summary>
         /// <returns>サブキーに設定されている値を返す</returns>
-        private string regCurrentValueGet()
+        private string RegCurrentValueGet()
         {
             //レジストリキーを開き、指定したパスが存在しないときは "none" が返される
             Microsoft.Win32.RegistryKey regkey =
@@ -41,7 +41,7 @@
         /// LocalMachineの値を読み取る"String"で返す
         /// </summary>
         /// <returns>サブキーに設定されている値を返す</returns>
-        private string regLocalValueGet()
+        private string RegLocalValueGet()
         {
             //レジストリキーを開き、指定したパスが存在しないときは"独自Exception"が返される
             Microsoft.Win32.RegistryKey regkey =
@@ -57,23 +57,23 @@
         /// <summary>
         /// cuRegSet()のカプセル化みたいなやつ(意味あるのかなこれ...)
         /// </summary>
-        public void cuRegWrite()
+        public void CuRegWrite()
         {
-            cuRegSet();
+            CuRegSet();
         }
 
         /// <summary>
         /// lmRegSet()のカプセル化みたいなやつ(意味あるのかなこれ...)
         /// </summary>
-        public void lmRegWrite() 
+        public void LmRegWrite() 
         {
-            lmRegSet();
+            LmRegSet();
         }
 
         /// <summary>
         /// CurrentUserの指定されたサブキーの値を変更する
         /// </summary>
-        private void cuRegSet()
+        private void CuRegSet()
         {
             //レジストリキーを開き、指定したパスが存在しないときは"独自Exception"が返される
             Microsoft.Win32.RegistryKey regkey =
@@ -98,7 +98,7 @@
         /// <summary>
         /// LocalMachineの指定されたサブキーの値を変更する
         /// </summary>
-        private void lmRegSet()
+        private void LmRegSet()
         {
             //レジストリキーを開き、指定したパスが存在しないときは"独自Exception"が返される
             Microsoft.Win32.RegistryKey regkey =

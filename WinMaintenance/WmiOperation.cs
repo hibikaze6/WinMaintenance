@@ -13,18 +13,18 @@ namespace WinMaintenance
         /// Wmiクラスから参照し取得したWmiプロパティの値を返す
         /// </summary>
         /// <returns>指定されたクラスのプロパティの値を"文字列"で返す</returns>
-        public string getWmiInfo()
+        public string GetWmiInfo()
         {
-                return wmiInfo();
+                return WmiInfo();
         }
 
         /// <summary>
         /// Wmiクラスの中の"全プロパティ"を返す
         /// </summary>
         /// <returns>指定されたクラスの"全プロパティ"が入った"コレクション(ManagementObjectCollection)"を返す</returns>
-        public ManagementObjectCollection getWmiAll()
+        public ManagementObjectCollection GetWmiAll()
         {
-                return wmiAll();
+                return WmiAll();
         }
 
         //Wmi関係の変数を定義
@@ -35,7 +35,7 @@ namespace WinMaintenance
         /// Wmiクラスから参照し取得したWmiプロパティの値を返す
         /// </summary>
         /// <returns>指定されたクラスのプロパティの値を"文字列"で返す</returns>
-        private string wmiInfo()
+        private string WmiInfo()
         {
             // 結果格納するの変数を初期化
             var result = string.Empty;
@@ -65,7 +65,7 @@ namespace WinMaintenance
         /// Wmiクラスの中の"全プロパティ"を返す
         /// </summary>
         /// <returns指定されたクラスの"全プロパティ"が入った"コレクション(ManagementObjectCollection)"を返す></returns>
-        private ManagementObjectCollection wmiAll()
+        private ManagementObjectCollection WmiAll()
         {
             do
             {
