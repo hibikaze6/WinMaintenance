@@ -51,7 +51,6 @@
             this.settingsTab = new System.Windows.Forms.TabPage();
             this.explorerSettingsGroupbox = new System.Windows.Forms.GroupBox();
             this.pcHideGroupbox = new System.Windows.Forms.GroupBox();
-            this.pcHide3dObjectCheckbox = new System.Windows.Forms.CheckBox();
             this.pcHideDesktopCheckbox = new System.Windows.Forms.CheckBox();
             this.pcHideMusicCheckbox = new System.Windows.Forms.CheckBox();
             this.pcHideDocumentCheckbox = new System.Windows.Forms.CheckBox();
@@ -291,7 +290,6 @@
             // 
             // pcHideGroupbox
             // 
-            this.pcHideGroupbox.Controls.Add(this.pcHide3dObjectCheckbox);
             this.pcHideGroupbox.Controls.Add(this.pcHideDesktopCheckbox);
             this.pcHideGroupbox.Controls.Add(this.pcHideMusicCheckbox);
             this.pcHideGroupbox.Controls.Add(this.pcHideDocumentCheckbox);
@@ -300,20 +298,10 @@
             this.pcHideGroupbox.Controls.Add(this.pcHidePictureCheckbox);
             this.pcHideGroupbox.Location = new System.Drawing.Point(15, 20);
             this.pcHideGroupbox.Name = "pcHideGroupbox";
-            this.pcHideGroupbox.Size = new System.Drawing.Size(189, 180);
+            this.pcHideGroupbox.Size = new System.Drawing.Size(189, 155);
             this.pcHideGroupbox.TabIndex = 1;
             this.pcHideGroupbox.TabStop = false;
             this.pcHideGroupbox.Text = "エクスプローラのPCのフォルダ非表示";
-            // 
-            // pcHide3dObjectCheckbox
-            // 
-            this.pcHide3dObjectCheckbox.AutoSize = true;
-            this.pcHide3dObjectCheckbox.Location = new System.Drawing.Point(11, 155);
-            this.pcHide3dObjectCheckbox.Name = "pcHide3dObjectCheckbox";
-            this.pcHide3dObjectCheckbox.Size = new System.Drawing.Size(124, 16);
-            this.pcHide3dObjectCheckbox.TabIndex = 6;
-            this.pcHide3dObjectCheckbox.Text = "3Dオブジェクトフォルダ";
-            this.pcHide3dObjectCheckbox.UseVisualStyleBackColor = true;
             // 
             // pcHideDesktopCheckbox
             // 
@@ -414,7 +402,6 @@
         private System.Windows.Forms.GroupBox explorerSettingsGroupbox;
         private System.Windows.Forms.CheckBox pcHidePictureCheckbox;
         private System.Windows.Forms.GroupBox pcHideGroupbox;
-        private System.Windows.Forms.CheckBox pcHide3dObjectCheckbox;
         private System.Windows.Forms.CheckBox pcHideDesktopCheckbox;
         private System.Windows.Forms.CheckBox pcHideMusicCheckbox;
         private System.Windows.Forms.CheckBox pcHideDocumentCheckbox;

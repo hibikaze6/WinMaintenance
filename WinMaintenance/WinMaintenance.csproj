@@ -87,10 +87,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoProps.cs" />
-    <Compile Include="delegateMethods%28Main%29.cs">
+    <Compile Include="DelegateMethods%28Main%29.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SettingGetSet.cs">
+    <Compile Include="PSCommands.cs" />
+    <Compile Include="SettingsGetSet.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main.cs">

@@ -29,11 +29,11 @@
             //レジストリキーを開き、指定したパスが存在しないときは "none" が返される
             Microsoft.Win32.RegistryKey regkey =
                 Microsoft.Win32.Registry.CurrentUser.OpenSubKey(AutoProps.regKeyPass, true);
-            if (regkey == null) return "none";
+            if (regkey == null) return "Path is None";
 
             //サブキーの文字列、数値を読み込む
             //指定した名前の値が存在しないときは "none" が返される
-            return (regkey.GetValue(AutoProps.regSubKeyName, "none").ToString());
+            return (regkey.GetValue(AutoProps.regSubKeyName, "SubKey is None").ToString());
 
         }
 
@@ -46,11 +46,12 @@
             //レジストリキーを開き、指定したパスが存在しないときは"独自Exception"が返される
             Microsoft.Win32.RegistryKey regkey =
                 Microsoft.Win32.Registry.LocalMachine.OpenSubKey(AutoProps.regKeyPass, true);
-            if (regkey == null) /*ここに独自Exceptionを返す記述*/ return "none"; //これは一時的な記述...だと思う
+            if (regkey == null) /*ここに独自Exceptionを返す記述*/ return "Path is None"; //これは一時的な記述...だと思う
 
-                //サブキーの文字列、数値を読み込む
-                //指定した名前の値が存在しないときは "none" が返される
-                return (regkey.GetValue(AutoProps.regSubKeyName, "none").ToString());
+            //サブキーの文字列、数値を読み込む
+            //サブキーを開き、指定したパスが存在しないときは"独自Exception"が返される
+            //指定した名前の値が存在しないときは "none" が返される
+            return (regkey.GetValue(AutoProps.regSubKeyName, "SubKey is None").ToString());
         }
 
         /// <summary>
