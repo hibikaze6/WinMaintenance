@@ -35,6 +35,8 @@ namespace WinMaintenance
         /// </summary>
         WmiOperation WmiOperation = new WmiOperation();
 
+        PSCommands PSCommands = new PSCommands();
+
         //ここにはInvoke処理でFormの値が変更される処理を書くところ ～ここから～
 
         private void SetCpuProgressValue(int cpuUsePer)
@@ -223,6 +225,10 @@ namespace WinMaintenance
             AutoProps.classProperty = "Name";
             cpuNameLabel.Text = WmiOperation.GetWmiInfo();
             //搭載Cpuによって"gpuPictureBox"の画像を変える
+
+            //Test用
+            //cpuNameLabel.Text = "AMD";
+
             try
             {
                 if (cpuNameLabel.Text.Contains("Intel"))
@@ -249,6 +255,10 @@ namespace WinMaintenance
             AutoProps.classProperty = "Name";
             gpuNameLabel.Text = WmiOperation.GetWmiInfo();
             //搭載Gpuによって"gpuPictureBox"の画像を変える
+
+            //Test用
+            //gpuNameLabel.Text = ""; 
+
             try
             {
                 if (gpuNameLabel.Text.Contains("Intel"))
@@ -332,6 +342,7 @@ namespace WinMaintenance
                 _ = await Task.Run(() => { return NowTimeLabelChange(); });
 
             }
+
         }
 
         /// <summary>
@@ -358,6 +369,26 @@ namespace WinMaintenance
             RegSettingWrite();
 
             MessageBox.Show("OK");
+        }
+
+        private void sfcButton_Click(object sender, EventArgs e)
+        {
+            PSCommands.WaitCmdRun("sfc /scannow");
+        }
+
+        private void dismButton_Click(object sender, EventArgs e)
+        {
+            PSCommands.WaitCmdRun("dism /online /cleanup-image /restorehealth");
+        }
+
+        private void defragButton_Click(object sender, EventArgs e)
+        {
+            PSCommands.ExeRun(@"dfrgui.exe");
+        }
+
+        private void cleanupButton_Click(object sender, EventArgs e)
+        {
+            PSCommands.ExeRun(@"cleanmgr.exe");
         }
     }
 }

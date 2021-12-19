@@ -4,23 +4,30 @@ namespace WinMaintenance
 {
     class PSCommands
     {
-
-        const string ps_command = @"Get-Process | Get-Process | Sort-Object PM -Descending | Out-File -FilePath ";
         //PowerShellの実行メソッド（引数:PowerShellコマンド)
-        private void RegSettingsBackUp()
+        public void WaitCmdRun(string executeCommand)
         {
-            // パワーシェルのGet-Processをダンプしたかったのでここで出力ファイル定義(可変)を実行させる。
-            string option = ps_command + @"C:\temp\dump.txt";
-            OpenWithArguments(option);  // メソッド呼び出し
+            Process process = new Process();
+            ProcessStartInfo processStartInfo = new ProcessStartInfo("cmd.exe", "/c " + executeCommand);
+
+            process = Process.Start(processStartInfo);
+            process.WaitForExit();
         }
-        static void OpenWithArguments(string options)
+
+        public void NoWaitCmdRun(string executeCommand)
         {
-            Process cmd = new Process();
-            cmd.StartInfo.FileName = "PowerShell.exe";
-            //PowerShellのWindowを立ち上げずに実行したい場合は" cmd.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; "
-            // 引数optionsをShellのコマンドとして渡す。
-            cmd.StartInfo.Arguments = options;
-            cmd.Start();
+            Process process = new Process();
+            ProcessStartInfo processStartInfo = new ProcessStartInfo("cmd.exe", "/c " + executeCommand);
+
+            process = Process.Start(processStartInfo);
+
+            process.CloseMainWindow();
+        }
+
+
+        public void ExeRun(string executeCommand)
+        {
+            Process.Start(executeCommand);
         }
     }
 }

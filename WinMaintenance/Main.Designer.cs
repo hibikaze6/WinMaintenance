@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.cpuProgress = new System.Windows.Forms.ProgressBar();
             this.cpuNameLabel = new System.Windows.Forms.Label();
             this.memoryAvailableLabel = new System.Windows.Forms.Label();
@@ -35,7 +36,7 @@
             this.applyButton = new System.Windows.Forms.Button();
             this.cpuUsePerLabel = new System.Windows.Forms.Label();
             this.memUsePerLabel = new System.Windows.Forms.Label();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.wmTabControl = new System.Windows.Forms.TabControl();
             this.taskMgrTab = new System.Windows.Forms.TabPage();
             this.diskListCb = new System.Windows.Forms.ComboBox();
             this.diskUsePerLabel = new System.Windows.Forms.Label();
@@ -44,8 +45,6 @@
             this.memoryTypeLabel = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label1 = new System.Windows.Forms.Label();
-            this.cpuPictureBox = new System.Windows.Forms.PictureBox();
-            this.gpuPictureBox = new System.Windows.Forms.PictureBox();
             this.gpuNameLabel = new System.Windows.Forms.Label();
             this.nowTimeLabel = new System.Windows.Forms.Label();
             this.settingsTab = new System.Windows.Forms.TabPage();
@@ -57,13 +56,21 @@
             this.pcHideDownloadCheckbox = new System.Windows.Forms.CheckBox();
             this.pcHideVideoCheckbox = new System.Windows.Forms.CheckBox();
             this.pcHidePictureCheckbox = new System.Windows.Forms.CheckBox();
-            this.tabControl1.SuspendLayout();
+            this.toolTab = new System.Windows.Forms.TabPage();
+            this.cpuPictureBox = new System.Windows.Forms.PictureBox();
+            this.gpuPictureBox = new System.Windows.Forms.PictureBox();
+            this.cleanupButton = new System.Windows.Forms.Button();
+            this.defragButton = new System.Windows.Forms.Button();
+            this.dismButton = new System.Windows.Forms.Button();
+            this.sfcButton = new System.Windows.Forms.Button();
+            this.wmTabControl.SuspendLayout();
             this.taskMgrTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cpuPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gpuPictureBox)).BeginInit();
             this.settingsTab.SuspendLayout();
             this.explorerSettingsGroupbox.SuspendLayout();
             this.pcHideGroupbox.SuspendLayout();
+            this.toolTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cpuPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gpuPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // cpuProgress
@@ -128,15 +135,16 @@
             this.memUsePerLabel.TabIndex = 6;
             this.memUsePerLabel.Text = "--％";
             // 
-            // tabControl1
+            // wmTabControl
             // 
-            this.tabControl1.Controls.Add(this.taskMgrTab);
-            this.tabControl1.Controls.Add(this.settingsTab);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(787, 397);
-            this.tabControl1.TabIndex = 7;
+            this.wmTabControl.Controls.Add(this.taskMgrTab);
+            this.wmTabControl.Controls.Add(this.settingsTab);
+            this.wmTabControl.Controls.Add(this.toolTab);
+            this.wmTabControl.Location = new System.Drawing.Point(12, 12);
+            this.wmTabControl.Name = "wmTabControl";
+            this.wmTabControl.SelectedIndex = 0;
+            this.wmTabControl.Size = new System.Drawing.Size(787, 397);
+            this.wmTabControl.TabIndex = 7;
             // 
             // taskMgrTab
             // 
@@ -226,26 +234,6 @@
             this.label1.Size = new System.Drawing.Size(29, 12);
             this.label1.TabIndex = 13;
             this.label1.Text = "--％";
-            // 
-            // cpuPictureBox
-            // 
-            this.cpuPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.cpuPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.cpuPictureBox.Location = new System.Drawing.Point(18, 59);
-            this.cpuPictureBox.Name = "cpuPictureBox";
-            this.cpuPictureBox.Size = new System.Drawing.Size(115, 115);
-            this.cpuPictureBox.TabIndex = 11;
-            this.cpuPictureBox.TabStop = false;
-            // 
-            // gpuPictureBox
-            // 
-            this.gpuPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.gpuPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.gpuPictureBox.Location = new System.Drawing.Point(18, 241);
-            this.gpuPictureBox.Name = "gpuPictureBox";
-            this.gpuPictureBox.Size = new System.Drawing.Size(115, 115);
-            this.gpuPictureBox.TabIndex = 10;
-            this.gpuPictureBox.TabStop = false;
             // 
             // gpuNameLabel
             // 
@@ -363,26 +351,101 @@
             this.pcHidePictureCheckbox.Text = "ピクチャフォルダ";
             this.pcHidePictureCheckbox.UseVisualStyleBackColor = true;
             // 
+            // toolTab
+            // 
+            this.toolTab.Controls.Add(this.cleanupButton);
+            this.toolTab.Controls.Add(this.defragButton);
+            this.toolTab.Controls.Add(this.dismButton);
+            this.toolTab.Controls.Add(this.sfcButton);
+            this.toolTab.Location = new System.Drawing.Point(4, 22);
+            this.toolTab.Name = "toolTab";
+            this.toolTab.Padding = new System.Windows.Forms.Padding(3);
+            this.toolTab.Size = new System.Drawing.Size(779, 371);
+            this.toolTab.TabIndex = 2;
+            this.toolTab.Text = "Tools";
+            this.toolTab.UseVisualStyleBackColor = true;
+            // 
+            // cpuPictureBox
+            // 
+            this.cpuPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.cpuPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.cpuPictureBox.Location = new System.Drawing.Point(18, 59);
+            this.cpuPictureBox.Name = "cpuPictureBox";
+            this.cpuPictureBox.Size = new System.Drawing.Size(115, 115);
+            this.cpuPictureBox.TabIndex = 11;
+            this.cpuPictureBox.TabStop = false;
+            // 
+            // gpuPictureBox
+            // 
+            this.gpuPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.gpuPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.gpuPictureBox.Location = new System.Drawing.Point(18, 241);
+            this.gpuPictureBox.Name = "gpuPictureBox";
+            this.gpuPictureBox.Size = new System.Drawing.Size(115, 115);
+            this.gpuPictureBox.TabIndex = 10;
+            this.gpuPictureBox.TabStop = false;
+            // 
+            // cleanupButton
+            // 
+            this.cleanupButton.Image = ((System.Drawing.Image)(resources.GetObject("cleanupButton.Image")));
+            this.cleanupButton.Location = new System.Drawing.Point(335, 17);
+            this.cleanupButton.Name = "cleanupButton";
+            this.cleanupButton.Size = new System.Drawing.Size(100, 100);
+            this.cleanupButton.TabIndex = 3;
+            this.cleanupButton.UseVisualStyleBackColor = true;
+            this.cleanupButton.Click += new System.EventHandler(this.cleanupButton_Click);
+            // 
+            // defragButton
+            // 
+            this.defragButton.Image = global::WinMaintenance.Properties.Resources.DEFRAG_ICON;
+            this.defragButton.Location = new System.Drawing.Point(229, 17);
+            this.defragButton.Name = "defragButton";
+            this.defragButton.Size = new System.Drawing.Size(100, 100);
+            this.defragButton.TabIndex = 2;
+            this.defragButton.UseVisualStyleBackColor = true;
+            this.defragButton.Click += new System.EventHandler(this.defragButton_Click);
+            // 
+            // dismButton
+            // 
+            this.dismButton.Image = global::WinMaintenance.Properties.Resources.BAT_ICON_DISM;
+            this.dismButton.Location = new System.Drawing.Point(123, 17);
+            this.dismButton.Name = "dismButton";
+            this.dismButton.Size = new System.Drawing.Size(100, 100);
+            this.dismButton.TabIndex = 1;
+            this.dismButton.UseVisualStyleBackColor = true;
+            this.dismButton.Click += new System.EventHandler(this.dismButton_Click);
+            // 
+            // sfcButton
+            // 
+            this.sfcButton.Image = global::WinMaintenance.Properties.Resources.BAT_ICON_SFC;
+            this.sfcButton.Location = new System.Drawing.Point(17, 17);
+            this.sfcButton.Name = "sfcButton";
+            this.sfcButton.Size = new System.Drawing.Size(100, 100);
+            this.sfcButton.TabIndex = 0;
+            this.sfcButton.UseVisualStyleBackColor = true;
+            this.sfcButton.Click += new System.EventHandler(this.sfcButton_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.wmTabControl);
             this.Controls.Add(this.applyButton);
             this.Name = "Main";
             this.Text = "WinMaintenance";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
-            this.tabControl1.ResumeLayout(false);
+            this.wmTabControl.ResumeLayout(false);
             this.taskMgrTab.ResumeLayout(false);
             this.taskMgrTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cpuPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gpuPictureBox)).EndInit();
             this.settingsTab.ResumeLayout(false);
             this.explorerSettingsGroupbox.ResumeLayout(false);
             this.pcHideGroupbox.ResumeLayout(false);
             this.pcHideGroupbox.PerformLayout();
+            this.toolTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.cpuPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gpuPictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -396,7 +459,7 @@
         private System.Windows.Forms.Button applyButton;
         private System.Windows.Forms.Label cpuUsePerLabel;
         private System.Windows.Forms.Label memUsePerLabel;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl wmTabControl;
         private System.Windows.Forms.TabPage taskMgrTab;
         private System.Windows.Forms.TabPage settingsTab;
         private System.Windows.Forms.GroupBox explorerSettingsGroupbox;
@@ -418,6 +481,11 @@
         private System.Windows.Forms.Label diskAvailableLabel;
         private System.Windows.Forms.ProgressBar diskProgress;
         private System.Windows.Forms.ComboBox diskListCb;
+        private System.Windows.Forms.TabPage toolTab;
+        private System.Windows.Forms.Button sfcButton;
+        private System.Windows.Forms.Button dismButton;
+        private System.Windows.Forms.Button defragButton;
+        private System.Windows.Forms.Button cleanupButton;
     }
 }
 
